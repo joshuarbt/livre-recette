@@ -1,0 +1,6 @@
+REFERENCE_garde-robe/
+/node_modules
+/.next/
+/out/
+.env*.local
+next-env.d.ts

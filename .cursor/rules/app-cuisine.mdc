@@ -1,0 +1,70 @@
+---
+description: Conventions app-cuisine — architecture, design system, Supabase, TypeScript
+alwaysApply: true
+---
+
+# app-cuisine — règles projet
+
+## Référence (lecture seule)
+
+- `REFERENCE_garde-robe/` est **uniquement** une référence d'architecture, de design et de patterns.
+- **Ne jamais** modifier, committer ou copier-coller aveuglément ce dossier — s'en inspirer et adapter au domaine cuisine.
+- Exclure explicitement `REFERENCE_garde-robe/` de toute opération d'édition.
+
+## Racine du projet
+
+- La racine Git **est** le projet app-cuisine (`livre-recette/`).
+- Ne **jamais** créer de sous-dossier wrapper (ex. `app-cuisine/app-cuisine/`).
+- Code applicatif dans `src/`, migrations dans `supabase/` — directement sous la racine.
+
+## Architecture
+
+Reproduire exactement les conventions de nommage et la structure de `REFERENCE_garde-robe/src/` :
+
+| Couche | Emplacement | Exemples référence |
+|--------|-------------|-------------------|
+| Pages (App Router) | `src/app/` | `login/`, `admin/`, `dashboard/` |
+| Composants UI (primitives / « atoms ») | `src/components/ui/` | `BottomSheet`, `EmptyState`, `Icon`, `IconButton` |
+| Layout | `src/components/layout/` | `AppNav`, `PageShell`, `MobileTabBar` |
+| Domaine métier | `src/components/{domaine}/` | `auth/`, `admin/` |
+| Logique serveur | `src/lib/{domaine}/` | `actions.ts`, `queries.ts`, `validation.ts` |
+| Clients Supabase | `src/lib/supabase/` | `client.ts`, `server.ts`, `middleware.ts`, `admin.ts` |
+| Auth admin | `src/lib/admin/` | `auth.ts` (`isAdmin`, `requireAdmin`) |
+| Types | `src/types/` | créer **avant** les composants |
+| Helpers purs | `src/utils/` | sans dépendance framework |
+| Hooks | `src/hooks/` | `useMediaQuery`, etc. |
+
+Patterns Supabase à reproduire :
+
+- **Browser** : `createBrowserClient` via `@supabase/ssr` (`src/lib/supabase/client.ts`).
+- **Server** : `createServerClient` + cookies Next.js (`src/lib/supabase/server.ts`).
+- **Session** : `updateSession` dans `src/proxy.ts` (Next.js 16).
+- **Admin** : `user.app_metadata.role === "admin"` + fallback `ADMIN_USER_IDS` (`src/lib/admin/auth.ts`).
+
+Composants : petits et focalisés — **un composant = une responsabilité**. Pas de composants fourre-tout.
+
+## Design system
+
+Reprendre **exactement** le design system de garde-robe :
+
+- Tokens CSS : `src/app/globals.css` (`--background`, `--foreground`, `--space-*`, `.text-display`, `.btn-*`, etc.) — copier depuis `REFERENCE_garde-robe/src/app/globals.css`.
+- Typo : Plus Jakarta Sans (via layout).
+- Motion : `framer-motion` + `src/lib/motion.ts` (reduced-motion safe).
+- Icons : `lucide-react` via `src/lib/icons.ts` et composant `Icon`.
+
+**Ne jamais** introduire un nouveau composant UI si un équivalent existe déjà dans `src/components/ui/` — réutiliser ou étendre l'existant.
+
+## Code TypeScript
+
+- TypeScript strict (`strict: true`).
+- Typer **toutes** les props de composants et retours de fonctions.
+- Créer les types dans `src/types/` **avant** les composants qui les consomment.
+- Interdit : `any`, `@ts-ignore`.
+- Pas de `useEffect` inutile — préférer Server Components, actions serveur, ou hooks dédiés.
+
+## Base de données Supabase
+
+- **Nouvelle** base Supabase dédiée à l'app cuisine (variables dans `.env.local.example`).
+- Même logique RLS que garde-robe : policies `authenticated` + `auth.uid()` par table utilisateur.
+- Même gestion utilisateurs : table `profiles`, trigger `handle_new_user`, rôle admin via `app_metadata.role`.
+- Migrations SQL dans `supabase/migrations/` avec timestamps ordonnés.
