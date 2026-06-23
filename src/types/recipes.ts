@@ -43,15 +43,6 @@ export type RecipeDetail = RecipeListItem & {
   steps: RecipeStepDetail[];
 };
 
-export type RecipeFormInput = {
-  title: string;
-  description?: string;
-  servings?: number;
-  prepTime?: number;
-  cookTime?: number;
-  category?: string;
-};
-
 export type RecipeIngredientFormRow = {
   clientId: string;
   name: string;
@@ -157,5 +148,49 @@ export function createDefaultCreateRecipeFormValues(): CreateRecipeFormValues {
     ingredients: [createEmptyIngredientRow()],
     utensils: [],
     steps: [createEmptyStepRow()],
+  };
+}
+
+function toFormCategory(category: string | null): RecipeCategory | "" {
+  if (!category) {
+    return "";
+  }
+  const match = RECIPE_CATEGORIES.find((item) => item.value === category);
+  return match ? match.value : "";
+}
+
+export function recipeDetailToCreateRecipeFormValues(recipe: RecipeDetail): CreateRecipeFormValues {
+  const sortedSteps = [...recipe.steps].sort((a, b) => a.stepNumber - b.stepNumber);
+
+  return {
+    title: recipe.title,
+    description: recipe.description ?? "",
+    category: toFormCategory(recipe.category),
+    prepTime: recipe.prepTime ? String(recipe.prepTime) : "",
+    cookTime: recipe.cookTime ? String(recipe.cookTime) : "",
+    servings: recipe.servings ? String(recipe.servings) : "",
+    imageMode: "url",
+    imageUrl: recipe.imageUrl ?? "",
+    imageFile: null,
+    ingredients:
+      recipe.ingredients.length > 0
+        ? recipe.ingredients.map((ingredient) => ({
+            clientId: crypto.randomUUID(),
+            name: ingredient.name,
+            quantity: String(ingredient.quantity),
+            unit: ingredient.unit,
+          }))
+        : [createEmptyIngredientRow()],
+    utensils: recipe.utensils.map((utensil) => ({
+      clientId: crypto.randomUUID(),
+      name: utensil.name,
+    })),
+    steps:
+      sortedSteps.length > 0
+        ? sortedSteps.map((step) => ({
+            clientId: crypto.randomUUID(),
+            instruction: step.instruction,
+          }))
+        : [createEmptyStepRow()],
   };
 }

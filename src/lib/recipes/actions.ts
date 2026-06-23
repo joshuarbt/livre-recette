@@ -2,14 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { parseCreateRecipePayload, parseRecipeFormInput } from "@/lib/recipes/validation";
+import { parseCreateRecipePayload } from "@/lib/recipes/validation";
 import { createClient } from "@/lib/supabase/server";
-import type {
-  CreateRecipeActionResult,
-  CreateRecipePayload,
-  RecipeActionResult,
-  RecipeFormInput,
-} from "@/types/recipes";
+import type { CreateRecipeActionResult, CreateRecipePayload, RecipeActionResult } from "@/types/recipes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 async function requireUserId(): Promise<string | RecipeActionResult> {
@@ -130,6 +125,57 @@ async function findOrCreateUtensil(
   return data.id;
 }
 
+async function insertRecipeChildren(
+  supabase: SupabaseClient,
+  userId: string,
+  recipeId: string,
+  data: CreateRecipePayload,
+): Promise<void> {
+  for (const ingredient of data.ingredients) {
+    const ingredientId = await findOrCreateIngredient(
+      supabase,
+      userId,
+      ingredient.name.trim(),
+      ingredient.unit.trim(),
+    );
+
+    const { error } = await supabase.from("recipe_ingredients").insert({
+      recipe_id: recipeId,
+      ingredient_id: ingredientId,
+      quantity: ingredient.quantity,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  for (const utensil of data.utensils) {
+    const utensilId = await findOrCreateUtensil(supabase, userId, utensil.name.trim());
+
+    const { error } = await supabase.from("recipe_utensils").insert({
+      recipe_id: recipeId,
+      utensil_id: utensilId,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  for (const [index, step] of data.steps.entries()) {
+    const { error } = await supabase.from("recipe_steps").insert({
+      recipe_id: recipeId,
+      step_number: index + 1,
+      instruction: step.instruction.trim(),
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+  }
+}
+
 export async function createRecipeFull(
   payload: CreateRecipePayload,
 ): Promise<CreateRecipeActionResult> {
@@ -171,50 +217,7 @@ export async function createRecipeFull(
     }
 
     recipeId = recipe.id;
-
-    for (const ingredient of parsed.data.ingredients) {
-      const ingredientId = await findOrCreateIngredient(
-        supabase,
-        userResult,
-        ingredient.name.trim(),
-        ingredient.unit.trim(),
-      );
-
-      const { error } = await supabase.from("recipe_ingredients").insert({
-        recipe_id: recipe.id,
-        ingredient_id: ingredientId,
-        quantity: ingredient.quantity,
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-    }
-
-    for (const utensil of parsed.data.utensils) {
-      const utensilId = await findOrCreateUtensil(supabase, userResult, utensil.name.trim());
-
-      const { error } = await supabase.from("recipe_utensils").insert({
-        recipe_id: recipe.id,
-        utensil_id: utensilId,
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-    }
-
-    for (const [index, step] of parsed.data.steps.entries()) {
-      const { error } = await supabase.from("recipe_steps").insert({
-        recipe_id: recipe.id,
-        step_number: index + 1,
-        instruction: step.instruction.trim(),
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-    }
+    await insertRecipeChildren(supabase, userResult, recipe.id, parsed.data);
   } catch (error) {
     if (recipeId) {
       await supabase.from("recipes").delete().eq("id", recipeId).eq("user_id", userResult);
@@ -228,56 +231,24 @@ export async function createRecipeFull(
   redirect(`/recipes/${recipeId}`);
 }
 
-export async function createRecipe(input: RecipeFormInput): Promise<RecipeActionResult> {
-  const userResult = await requireUserId();
-  if (typeof userResult !== "string") {
-    return userResult;
-  }
-
-  const parsed = parseRecipeFormInput(input);
-  if (!parsed.valid) {
-    return { success: false, error: parsed.error };
-  }
-
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("recipes")
-    .insert({
-      user_id: userResult,
-      title: parsed.data.title,
-      description: parsed.data.description,
-      servings: parsed.data.servings,
-      prep_time: parsed.data.prepTime,
-      cook_time: parsed.data.cookTime,
-      category: parsed.data.category,
-    })
-    .select("id")
-    .single();
-
-  if (error || !data) {
-    return { success: false, error: error?.message ?? "Erreur lors de la création." };
-  }
-
-  revalidateRecipePaths();
-  redirect(`/recipes/${data.id}`);
-}
-
-export async function updateRecipe(
+export async function updateRecipeFull(
   id: string,
-  input: RecipeFormInput,
-): Promise<RecipeActionResult> {
+  payload: CreateRecipePayload,
+): Promise<CreateRecipeActionResult> {
   const userResult = await requireUserId();
   if (typeof userResult !== "string") {
-    return userResult;
+    const message = userResult.success === false ? userResult.error : "Vous devez être connecté.";
+    return { success: false, errors: { form: message } };
   }
 
-  const parsed = parseRecipeFormInput(input);
+  const parsed = parseCreateRecipePayload(payload);
   if (!parsed.valid) {
-    return { success: false, error: parsed.error };
+    return { success: false, errors: parsed.errors };
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
+
+  const { error: updateError } = await supabase
     .from("recipes")
     .update({
       title: parsed.data.title,
@@ -286,12 +257,50 @@ export async function updateRecipe(
       prep_time: parsed.data.prepTime,
       cook_time: parsed.data.cookTime,
       category: parsed.data.category,
+      image_url: parsed.data.imageUrl,
     })
     .eq("id", id)
     .eq("user_id", userResult);
 
-  if (error) {
-    return { success: false, error: error.message };
+  if (updateError) {
+    return {
+      success: false,
+      errors: { form: updateError.message ?? "Erreur lors de la mise à jour de la recette." },
+    };
+  }
+
+  try {
+    const { error: deleteIngredientsError } = await supabase
+      .from("recipe_ingredients")
+      .delete()
+      .eq("recipe_id", id);
+
+    if (deleteIngredientsError) {
+      throw new Error(deleteIngredientsError.message);
+    }
+
+    const { error: deleteUtensilsError } = await supabase
+      .from("recipe_utensils")
+      .delete()
+      .eq("recipe_id", id);
+
+    if (deleteUtensilsError) {
+      throw new Error(deleteUtensilsError.message);
+    }
+
+    const { error: deleteStepsError } = await supabase
+      .from("recipe_steps")
+      .delete()
+      .eq("recipe_id", id);
+
+    if (deleteStepsError) {
+      throw new Error(deleteStepsError.message);
+    }
+
+    await insertRecipeChildren(supabase, userResult, id, parsed.data);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur lors de la mise à jour.";
+    return { success: false, errors: { form: message } };
   }
 
   revalidateRecipePaths(id);

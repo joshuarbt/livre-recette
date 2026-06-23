@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CreateRecipeFormClient } from "@/components/recipes/CreateRecipeFormClient";
+import { RecipeFormClient } from "@/components/recipes/RecipeFormClient";
 import { PageShell } from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase/server";
 
@@ -21,7 +21,7 @@ export default async function NouvelleRecettePage() {
       <Link href="/" className="btn-ghost mb-6 inline-flex items-center">
         Retour aux recettes
       </Link>
-      <CreateRecipeFormClient userId={user.id} />
+      <RecipeFormClient mode="create" userId={user.id} />
     </PageShell>
   );
 }

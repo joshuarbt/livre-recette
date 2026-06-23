@@ -9,6 +9,7 @@ import type {
   CreateRecipeFormErrors,
   CreateRecipeFormValues,
   CreateRecipePayload,
+  RecipeStepFormRow,
 } from "@/types/recipes";
 import {
   RECIPE_CATEGORIES,
@@ -19,10 +20,31 @@ import {
 } from "@/types/recipes";
 
 type CreateRecipeFormProps = {
+  mode?: "create" | "edit";
+  initialValues?: CreateRecipeFormValues;
+  cancelHref?: string;
+  submitLabel?: string;
   onSubmit: (payload: CreateRecipePayload, values: CreateRecipeFormValues) => void | Promise<void>;
   isSubmitting?: boolean;
   serverErrors?: CreateRecipeFormErrors;
 };
+
+function moveStep(
+  steps: RecipeStepFormRow[],
+  clientId: string,
+  direction: -1 | 1,
+): RecipeStepFormRow[] {
+  const index = steps.findIndex((step) => step.clientId === clientId);
+  const targetIndex = index + direction;
+
+  if (index < 0 || targetIndex < 0 || targetIndex >= steps.length) {
+    return steps;
+  }
+
+  const next = [...steps];
+  [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+  return next;
+}
 
 function FieldError({ message }: { message?: string }) {
   if (!message) {
@@ -57,14 +79,23 @@ function RecipeFormSection({ title, defaultOpen = true, children }: RecipeFormSe
 }
 
 export function CreateRecipeForm({
+  mode = "create",
+  initialValues,
+  cancelHref = "/",
+  submitLabel,
   onSubmit,
   isSubmitting = false,
   serverErrors = {},
 }: CreateRecipeFormProps) {
-  const [values, setValues] = useState<CreateRecipeFormValues>(createDefaultCreateRecipeFormValues);
+  const [values, setValues] = useState<CreateRecipeFormValues>(
+    () => initialValues ?? createDefaultCreateRecipeFormValues(),
+  );
   const [errors, setErrors] = useState<CreateRecipeFormErrors>({});
 
   const fieldErrors = { ...errors, ...serverErrors };
+  const resolvedSubmitLabel =
+    submitLabel ?? (mode === "edit" ? "Mettre à jour" : "Enregistrer la recette");
+  const submittingLabel = mode === "edit" ? "Mise à jour…" : "Enregistrement…";
 
   function updateField<K extends keyof CreateRecipeFormValues>(
     key: K,
@@ -168,6 +199,16 @@ export function CreateRecipeForm({
       </RecipeFormSection>
 
       <RecipeFormSection title="Photo">
+        {mode === "edit" && values.imageUrl ? (
+          <div className="mb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={values.imageUrl}
+              alt="Photo actuelle de la recette"
+              className="h-24 w-24 rounded-sm border border-[var(--border-hairline)] object-cover"
+            />
+          </div>
+        ) : null}
         <div className="flex gap-4">
           <label className="flex cursor-pointer items-center gap-2 text-sm">
             <input
@@ -393,6 +434,33 @@ export function CreateRecipeForm({
             <li key={row.clientId} className="space-y-2">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-caption font-medium">Étape {index + 1}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={isSubmitting || index === 0}
+                  onClick={() =>
+                    setValues((current) => ({
+                      ...current,
+                      steps: moveStep(current.steps, row.clientId, -1),
+                    }))
+                  }
+                  className="btn-ghost text-sm disabled:opacity-40"
+                >
+                  Monter
+                </button>
+                <button
+                  type="button"
+                  disabled={isSubmitting || index === values.steps.length - 1}
+                  onClick={() =>
+                    setValues((current) => ({
+                      ...current,
+                      steps: moveStep(current.steps, row.clientId, 1),
+                    }))
+                  }
+                  className="btn-ghost text-sm disabled:opacity-40"
+                >
+                  Descendre
+                </button>
                 <button
                   type="button"
                   disabled={isSubmitting || values.steps.length === 1}
@@ -406,6 +474,7 @@ export function CreateRecipeForm({
                 >
                   Retirer
                 </button>
+              </div>
               </div>
               <textarea
                 value={row.instruction}
@@ -450,9 +519,9 @@ export function CreateRecipeForm({
 
       <div className="flex flex-wrap items-center gap-4 border-t border-[var(--border-subtle)] pt-6">
         <button type="submit" disabled={isSubmitting} className="btn-primary">
-          {isSubmitting ? "Enregistrement…" : "Enregistrer la recette"}
+          {isSubmitting ? submittingLabel : resolvedSubmitLabel}
         </button>
-        <Link href="/" className="btn-ghost">
+        <Link href={cancelHref} className="btn-ghost">
           Annuler
         </Link>
       </div>

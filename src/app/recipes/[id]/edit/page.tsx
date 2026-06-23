@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { RecipeForm } from "@/components/recipes/RecipeForm";
+import { RecipeFormClient } from "@/components/recipes/RecipeFormClient";
 import { PageShell } from "@/components/layout/PageShell";
 import { getRecipeById } from "@/lib/recipes/queries";
 import { createClient } from "@/lib/supabase/server";
@@ -31,7 +31,12 @@ export default async function EditRecipePage({ params }: EditRecipePageProps) {
       <Link href={`/recipes/${recipe.id}`} className="btn-ghost mb-6 inline-flex items-center">
         Retour
       </Link>
-      <RecipeForm userId={user.id} initialRecipe={recipe} submitLabel="Mettre à jour" />
+      <RecipeFormClient
+        mode="edit"
+        userId={user.id}
+        recipeId={recipe.id}
+        initialRecipe={recipe}
+      />
     </PageShell>
   );
 }

@@ -1,8 +1,4 @@
-import type {
-  CreateRecipeFormErrors,
-  CreateRecipePayload,
-  RecipeFormInput,
-} from "@/types/recipes";
+import type { CreateRecipeFormErrors, CreateRecipePayload } from "@/types/recipes";
 
 export function parseCreateRecipePayload(
   payload: CreateRecipePayload,
@@ -41,68 +37,4 @@ export function parseCreateRecipePayload(
   }
 
   return { valid: true, data: payload };
-}
-
-export function parseTitle(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-export function parseOptionalText(value: string | undefined): string | null {
-  const trimmed = value?.trim();
-  return trimmed ? trimmed : null;
-}
-
-export function parseOptionalPositiveInt(value: number | undefined): number | null {
-  if (value === undefined || value === null) {
-    return null;
-  }
-  if (!Number.isInteger(value) || value <= 0) {
-    return null;
-  }
-  return value;
-}
-
-export function parseRecipeFormInput(input: RecipeFormInput): {
-  valid: true;
-  data: {
-    title: string;
-    description: string | null;
-    servings: number | null;
-    prepTime: number | null;
-    cookTime: number | null;
-    category: string | null;
-  };
-} | {
-  valid: false;
-  error: string;
-} {
-  const title = parseTitle(input.title);
-  if (!title) {
-    return { valid: false, error: "Le titre est obligatoire." };
-  }
-
-  if (input.servings !== undefined && parseOptionalPositiveInt(input.servings) === null) {
-    return { valid: false, error: "Nombre de parts invalide." };
-  }
-
-  if (input.prepTime !== undefined && parseOptionalPositiveInt(input.prepTime) === null) {
-    return { valid: false, error: "Temps de préparation invalide." };
-  }
-
-  if (input.cookTime !== undefined && parseOptionalPositiveInt(input.cookTime) === null) {
-    return { valid: false, error: "Temps de cuisson invalide." };
-  }
-
-  return {
-    valid: true,
-    data: {
-      title,
-      description: parseOptionalText(input.description),
-      servings: parseOptionalPositiveInt(input.servings),
-      prepTime: parseOptionalPositiveInt(input.prepTime),
-      cookTime: parseOptionalPositiveInt(input.cookTime),
-      category: parseOptionalText(input.category),
-    },
-  };
 }
