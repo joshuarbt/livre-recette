@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { RecipeAddAction } from "@/components/recipes/RecipeAddAction";
+import { RecipeHomeActions } from "@/components/recipes/RecipeHomeActions";
 import { RecipeList } from "@/components/recipes/RecipeList";
 import { PageShell } from "@/components/layout/PageShell";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -26,7 +26,9 @@ export default async function HomePage() {
       title="Recettes"
       subtitle={recipeLabel}
       wide
-      actions={<RecipeAddAction />}
+      actions={
+        <RecipeHomeActions userId={user.id} existingTitles={recipes.map((recipe) => recipe.title)} />
+      }
     >
       {recipes.length === 0 ? (
         <EmptyState

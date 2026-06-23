@@ -20,6 +20,11 @@ async function requireUserId(): Promise<string | RecipeActionResult> {
   return user.id;
 }
 
+export async function getAuthenticatedUserId(): Promise<string | null> {
+  const result = await requireUserId();
+  return typeof result === "string" ? result : null;
+}
+
 function revalidateRecipePaths(recipeId?: string): void {
   revalidatePath("/");
   if (recipeId) {
@@ -176,18 +181,20 @@ async function insertRecipeChildren(
   }
 }
 
-export async function createRecipeFull(
+export async function createRecipeFromPayload(
+  userId: string,
   payload: CreateRecipePayload,
-): Promise<CreateRecipeActionResult> {
-  const userResult = await requireUserId();
-  if (typeof userResult !== "string") {
-    const message = userResult.success === false ? userResult.error : "Vous devez être connecté.";
-    return { success: false, errors: { form: message } };
-  }
-
+): Promise<{ success: true; id: string } | { success: false; error: string }> {
   const parsed = parseCreateRecipePayload(payload);
   if (!parsed.valid) {
-    return { success: false, errors: parsed.errors };
+    const error =
+      parsed.errors.form ??
+      parsed.errors.title ??
+      parsed.errors.servings ??
+      parsed.errors.ingredients ??
+      parsed.errors.imageUrl ??
+      "Données de recette invalides.";
+    return { success: false, error };
   }
 
   const supabase = await createClient();
@@ -197,7 +204,7 @@ export async function createRecipeFull(
     const { data: recipe, error: recipeError } = await supabase
       .from("recipes")
       .insert({
-        user_id: userResult,
+        user_id: userId,
         title: parsed.data.title,
         description: parsed.data.description,
         servings: parsed.data.servings,
@@ -212,23 +219,45 @@ export async function createRecipeFull(
     if (recipeError || !recipe) {
       return {
         success: false,
-        errors: { form: recipeError?.message ?? "Erreur lors de la création de la recette." },
+        error: recipeError?.message ?? "Erreur lors de la création de la recette.",
       };
     }
 
     recipeId = recipe.id;
-    await insertRecipeChildren(supabase, userResult, recipe.id, parsed.data);
+    await insertRecipeChildren(supabase, userId, recipe.id, parsed.data);
   } catch (error) {
     if (recipeId) {
-      await supabase.from("recipes").delete().eq("id", recipeId).eq("user_id", userResult);
+      await supabase.from("recipes").delete().eq("id", recipeId).eq("user_id", userId);
     }
 
     const message = error instanceof Error ? error.message : "Erreur lors de la création.";
+    return { success: false, error: message };
+  }
+
+  return { success: true, id: recipeId! };
+}
+
+export async function createRecipeFull(
+  payload: CreateRecipePayload,
+): Promise<CreateRecipeActionResult> {
+  const userResult = await requireUserId();
+  if (typeof userResult !== "string") {
+    const message = userResult.success === false ? userResult.error : "Vous devez être connecté.";
     return { success: false, errors: { form: message } };
   }
 
-  revalidateRecipePaths(recipeId!);
-  redirect(`/recipes/${recipeId}`);
+  const parsed = parseCreateRecipePayload(payload);
+  if (!parsed.valid) {
+    return { success: false, errors: parsed.errors };
+  }
+
+  const result = await createRecipeFromPayload(userResult, parsed.data);
+  if (!result.success) {
+    return { success: false, errors: { form: result.error } };
+  }
+
+  revalidateRecipePaths(result.id);
+  redirect(`/recipes/${result.id}`);
 }
 
 export async function updateRecipeFull(

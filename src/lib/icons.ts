@@ -1,5 +1,17 @@
 import type { LucideIcon } from "lucide-react";
-import { Calendar, ChefHat, ChevronDown, ChevronLeft, ChevronRight, Plus, ShoppingCart, Snowflake, X } from "lucide-react";
+import {
+  Calendar,
+  ChefHat,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Plus,
+  ShoppingCart,
+  Snowflake,
+  Upload,
+  X,
+} from "lucide-react";
 
 export type { LucideIcon };
 
@@ -13,7 +25,9 @@ export const navIcons = {
 export const actionIcons = {
   add: Plus,
   close: X,
+  download: Download,
   expand: ChevronDown,
+  upload: Upload,
   weekPrev: ChevronLeft,
   weekNext: ChevronRight,
 } as const satisfies Record<string, LucideIcon>;

@@ -4,12 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { Icon } from "@/components/ui/Icon";
+import { downloadRecipeExport } from "@/lib/export-import";
+import { actionIcons } from "@/lib/icons";
 import { deleteRecipe } from "@/lib/recipes/actions";
 import type { RecipeDetail } from "@/types/recipes";
 import { formatRecipeServings, getRecipeCategoryLabel } from "@/types/recipes";
 
 type RecipeDetailViewProps = {
   recipe: RecipeDetail;
+  showImportSuccess?: boolean;
 };
 
 function formatMinutes(minutes: number | null): string | null {
@@ -19,7 +23,7 @@ function formatMinutes(minutes: number | null): string | null {
   return `${minutes} min`;
 }
 
-export function RecipeDetailView({ recipe }: RecipeDetailViewProps) {
+export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDetailViewProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -49,6 +53,11 @@ export function RecipeDetailView({ recipe }: RecipeDetailViewProps) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
+      {showImportSuccess ? (
+        <p role="status" className="alert-success">
+          Recette importée avec succès !
+        </p>
+      ) : null}
       {recipe.imageUrl ? (
         <div className="overflow-hidden bg-[var(--surface-muted)]">
           <Image
@@ -118,6 +127,14 @@ export function RecipeDetailView({ recipe }: RecipeDetailViewProps) {
       ) : null}
 
       <div className="flex flex-wrap gap-4">
+        <button
+          type="button"
+          onClick={() => downloadRecipeExport(recipe)}
+          className="btn-ghost inline-flex items-center gap-2 text-sm"
+        >
+          <Icon icon={actionIcons.download} size="sm" />
+          Exporter la recette
+        </button>
         <Link href={`/recipes/${recipe.id}/edit`} className="btn-ghost text-sm">
           Modifier
         </Link>

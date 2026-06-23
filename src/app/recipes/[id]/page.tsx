@@ -7,9 +7,10 @@ import { createClient } from "@/lib/supabase/server";
 
 type RecipeDetailPageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ imported?: string }>;
 };
 
-export default async function RecipeDetailPage({ params }: RecipeDetailPageProps) {
+export default async function RecipeDetailPage({ params, searchParams }: RecipeDetailPageProps) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,6 +21,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
   }
 
   const { id } = await params;
+  const { imported } = await searchParams;
   const recipe = await getRecipeById(id);
 
   if (!recipe) {
@@ -31,7 +33,7 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
       <Link href="/" className="btn-ghost mb-6 inline-flex items-center">
         Retour aux recettes
       </Link>
-      <RecipeDetailView recipe={recipe} />
+      <RecipeDetailView recipe={recipe} showImportSuccess={imported === "1"} />
     </PageShell>
   );
 }
