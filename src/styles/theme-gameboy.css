@@ -1,0 +1,217 @@
+[data-theme="gameboy"] {
+  --gb-darkest: #0f380f;
+  --gb-dark: #306230;
+  --gb-light: #8bac0f;
+  --gb-lightest: #9bbc0f;
+  --color-bg: var(--gb-lightest);
+  --color-surface: var(--gb-lightest);
+  --color-surface-2: var(--gb-light);
+  --color-text: var(--gb-darkest);
+  --color-text-muted: var(--gb-dark);
+  --color-text-faint: var(--gb-light);
+  --color-text-inverse: var(--gb-lightest);
+  --color-primary: var(--gb-darkest);
+  --color-primary-hover: var(--gb-dark);
+  --color-primary-active: var(--gb-darkest);
+  --color-primary-highlight: var(--gb-light);
+  --background: var(--gb-lightest);
+  --foreground: var(--color-text);
+  --muted: var(--color-text-muted);
+  --muted-light: var(--color-text-faint);
+  --surface: var(--color-surface);
+  --surface-muted: var(--color-surface-2);
+  --border-hairline: var(--gb-darkest);
+  --border-subtle: var(--gb-dark);
+  --border: var(--gb-darkest);
+  --accent: var(--gb-dark);
+  --accent-muted: var(--gb-light);
+  --status-error: var(--gb-darkest);
+  --status-error-bg: var(--gb-light);
+  --status-success: var(--gb-darkest);
+  --status-success-bg: var(--gb-light);
+  --status-warning: var(--gb-darkest);
+  --status-warning-bg: var(--gb-light);
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-full: 0;
+}
+
+[data-theme="gameboy"] body {
+  background: var(--gb-lightest);
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(15, 56, 15, 0.03) 3px,
+    rgba(15, 56, 15, 0.03) 4px
+  );
+  color: var(--color-text);
+  font-family: "Courier New", "Lucida Console", monospace !important;
+}
+
+[data-theme="gameboy"] .aero-background,
+[data-theme="gameboy"] .matrix-rain-canvas,
+[data-theme="gameboy"] .barbie-sparkles,
+[data-theme="gameboy"] .vaporwave-background,
+[data-theme="gameboy"] .ghibli-clouds {
+  display: none;
+}
+
+[data-theme="gameboy"] .font-display,
+[data-theme="gameboy"] .text-display,
+[data-theme="gameboy"] .text-display-lg,
+[data-theme="gameboy"] .text-title {
+  font-family: "Courier New", "Lucida Console", monospace !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gb-darkest);
+}
+
+[data-theme="gameboy"] header,
+[data-theme="gameboy"] nav.fixed.bottom-0 {
+  background: var(--gb-dark);
+  color: var(--gb-lightest);
+  border: 2px solid var(--gb-darkest);
+  box-shadow: 0 4px 0 var(--gb-darkest);
+}
+
+[data-theme="gameboy"] header a,
+[data-theme="gameboy"] header button:not(.btn-primary) {
+  color: var(--gb-lightest);
+}
+
+[data-theme="gameboy"] .surface-panel,
+[data-theme="gameboy"] .surface-card,
+[data-theme="gameboy"] .surface-editorial,
+[data-theme="gameboy"] .alert-error,
+[data-theme="gameboy"] .alert-success,
+[data-theme="gameboy"] .alert-warning,
+[data-theme="gameboy"] section.border,
+[data-theme="gameboy"] .grid.border,
+[data-theme="gameboy"] article a > div.overflow-hidden,
+[data-theme="gameboy"] li.border,
+[data-theme="gameboy"] details.border-b,
+[data-theme="gameboy"] button.border,
+[data-theme="gameboy"] button[class*="border-[var(--border"] {
+  background: var(--gb-lightest);
+  border: 2px solid var(--gb-darkest) !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 var(--gb-darkest);
+}
+
+[data-theme="gameboy"] .input-field {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-darkest);
+  border-radius: 0 !important;
+  color: var(--gb-darkest);
+  caret-color: var(--gb-darkest);
+  box-shadow: inset 2px 2px 0 rgba(15, 56, 15, 0.2);
+}
+
+[data-theme="gameboy"] .input-field:focus {
+  background: var(--gb-lightest);
+  outline: 2px solid var(--gb-darkest);
+  outline-offset: 2px;
+  box-shadow: inset 2px 2px 0 rgba(15, 56, 15, 0.2);
+}
+
+[data-theme="gameboy"] .btn-primary {
+  background: var(--gb-darkest);
+  color: var(--gb-lightest);
+  border: 2px solid var(--gb-darkest);
+  border-radius: 0 !important;
+  box-shadow: 3px 3px 0 var(--gb-dark);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition:
+    background 100ms ease,
+    box-shadow 100ms ease,
+    transform 100ms ease;
+}
+
+[data-theme="gameboy"] .btn-primary:hover {
+  background: var(--gb-dark);
+  box-shadow: 1px 1px 0 var(--gb-darkest);
+  transform: translate(2px, 2px);
+  opacity: 1;
+}
+
+[data-theme="gameboy"] .btn-secondary,
+[data-theme="gameboy"] .btn-ghost,
+[data-theme="gameboy"] .btn-icon,
+[data-theme="gameboy"] .btn-destructive {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-darkest);
+  border-radius: 0 !important;
+  color: var(--gb-darkest);
+  box-shadow: 3px 3px 0 var(--gb-darkest);
+}
+
+[data-theme="gameboy"] .btn-secondary:hover,
+[data-theme="gameboy"] .btn-ghost:hover,
+[data-theme="gameboy"] .btn-icon:hover {
+  background: var(--gb-lightest);
+  box-shadow: 1px 1px 0 var(--gb-darkest);
+  transform: translate(2px, 2px);
+  opacity: 1;
+}
+
+[data-theme="gameboy"] svg:not(.mobile-tab-bar__icon) {
+  color: var(--gb-darkest);
+}
+
+[data-theme="gameboy"] .mobile-tab-bar__icon {
+  color: var(--gb-dark);
+  filter: none;
+}
+
+[data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
+  color: var(--gb-darkest);
+}
+
+[data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-darkest);
+  border-radius: 0;
+  box-shadow: 2px 2px 0 var(--gb-darkest);
+}
+
+[data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
+  color: var(--gb-darkest);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
+  background: var(--gb-darkest);
+}
+
+[data-theme="gameboy"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[data-theme="gameboy"] ::-webkit-scrollbar-track {
+  background: var(--gb-light);
+  border: 2px solid var(--gb-darkest);
+}
+
+[data-theme="gameboy"] ::-webkit-scrollbar-thumb {
+  background: var(--gb-dark);
+  border: 2px solid var(--gb-darkest);
+}
+
+[data-theme="gameboy"] ::selection {
+  background: var(--gb-dark);
+  color: var(--gb-lightest);
+}
+
+[data-theme="gameboy"] form.mx-auto.max-w-2xl > details {
+  background: var(--gb-lightest);
+  border: 2px solid var(--gb-darkest);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--gb-darkest);
+}

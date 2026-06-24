@@ -1,0 +1,235 @@
+[data-theme="vaporwave"] {
+  --color-bg: #0d0015;
+  --color-surface: rgba(30, 0, 60, 0.75);
+  --color-surface-2: rgba(20, 0, 45, 0.8);
+  --color-text: #e0d0ff;
+  --color-text-muted: #b090e0;
+  --color-text-faint: #7050a0;
+  --color-primary: #b44fff;
+  --color-primary-highlight: rgba(180, 79, 255, 0.2);
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --muted: var(--color-text-muted);
+  --muted-light: var(--color-text-faint);
+  --surface: var(--color-surface);
+  --surface-muted: var(--color-surface-2);
+  --border-hairline: rgba(180, 0, 255, 0.4);
+  --border-subtle: rgba(180, 0, 255, 0.25);
+  --border: var(--border-hairline);
+  --accent: var(--color-primary);
+  --accent-muted: #00ffff;
+  --color-text-muted: var(--color-text-muted);
+  --status-error: #ff6b9d;
+  --status-error-bg: rgba(80, 0, 40, 0.6);
+  --status-success: #00ffff;
+  --status-success-bg: rgba(0, 60, 60, 0.6);
+  --status-warning: #ff8c00;
+  --status-warning-bg: rgba(80, 40, 0, 0.6);
+  --radius-full: 9999px;
+}
+
+[data-theme="vaporwave"] body {
+  background: linear-gradient(
+    180deg,
+    #0d0015 0%,
+    #1a0030 30%,
+    #2d0050 50%,
+    #1a0835 70%,
+    #000510 100%
+  );
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: var(--font-orbitron), monospace !important;
+}
+
+[data-theme="vaporwave"] .aero-background,
+[data-theme="vaporwave"] .matrix-rain-canvas,
+[data-theme="vaporwave"] .barbie-sparkles,
+[data-theme="vaporwave"] .ghibli-clouds {
+  display: none;
+}
+
+[data-theme="vaporwave"] .vaporwave-background {
+  display: block;
+}
+
+[data-theme="vaporwave"] .vaporwave-grid {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50vh;
+  background:
+    linear-gradient(transparent 0%, rgba(180, 0, 255, 0.15) 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(180, 0, 255, 0.2) 0px,
+      transparent 1px,
+      transparent 40px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(180, 0, 255, 0.2) 0px,
+      transparent 1px,
+      transparent 40px
+    );
+  transform: perspective(300px) rotateX(60deg);
+  transform-origin: bottom;
+  pointer-events: none;
+}
+
+[data-theme="vaporwave"] .vaporwave-sun {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(0, 0, 0, 0.4) 8px,
+      rgba(0, 0, 0, 0.4) 12px
+    ),
+    linear-gradient(180deg, #ff6ec7 0%, #ff8c00 40%, #ff4400 60%, #cc0066 100%);
+  transform: translateX(-50%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+[data-theme="vaporwave"] .font-display,
+[data-theme="vaporwave"] .text-display,
+[data-theme="vaporwave"] .text-display-lg,
+[data-theme="vaporwave"] .text-title {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-shadow:
+    0 0 10px rgba(180, 0, 255, 0.8),
+    0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+[data-theme="vaporwave"] header,
+[data-theme="vaporwave"] nav.fixed.bottom-0 {
+  background: rgba(10, 0, 25, 0.9);
+  border-color: rgba(180, 0, 255, 0.3);
+  box-shadow: 0 0 30px rgba(180, 0, 255, 0.2);
+}
+
+[data-theme="vaporwave"] .surface-panel,
+[data-theme="vaporwave"] .surface-card,
+[data-theme="vaporwave"] .surface-editorial,
+[data-theme="vaporwave"] .alert-error,
+[data-theme="vaporwave"] .alert-success,
+[data-theme="vaporwave"] .alert-warning,
+[data-theme="vaporwave"] section.border,
+[data-theme="vaporwave"] .grid.border,
+[data-theme="vaporwave"] article a > div.overflow-hidden,
+[data-theme="vaporwave"] li.border,
+[data-theme="vaporwave"] details.border-b,
+[data-theme="vaporwave"] button.border,
+[data-theme="vaporwave"] button[class*="border-[var(--border"] {
+  background: rgba(30, 0, 60, 0.75);
+  border: 1px solid rgba(180, 0, 255, 0.4) !important;
+  box-shadow:
+    0 0 20px rgba(180, 0, 255, 0.15),
+    0 0 60px rgba(0, 255, 255, 0.05),
+    inset 0 1px 0 rgba(180, 0, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="vaporwave"] .input-field {
+  background: rgba(10, 0, 30, 0.8);
+  border: 1px solid rgba(180, 0, 255, 0.4);
+  color: #e0d0ff;
+  caret-color: #e0d0ff;
+}
+
+[data-theme="vaporwave"] .input-field:focus {
+  border-color: #00ffff;
+  box-shadow:
+    0 0 0 3px rgba(0, 255, 255, 0.15),
+    0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+[data-theme="vaporwave"] .btn-primary {
+  background: linear-gradient(135deg, #b44fff, #ff2d95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 0 20px rgba(180, 0, 255, 0.5),
+    0 0 40px rgba(255, 45, 149, 0.3);
+  color: white;
+}
+
+[data-theme="vaporwave"] .btn-primary:hover {
+  opacity: 1;
+  box-shadow:
+    0 0 30px rgba(180, 0, 255, 0.6),
+    0 0 50px rgba(255, 45, 149, 0.4);
+}
+
+[data-theme="vaporwave"] .btn-secondary,
+[data-theme="vaporwave"] .btn-ghost,
+[data-theme="vaporwave"] .btn-icon,
+[data-theme="vaporwave"] .btn-destructive {
+  background: rgba(30, 0, 60, 0.6);
+  border-color: rgba(180, 0, 255, 0.4);
+  color: var(--color-text);
+}
+
+[data-theme="vaporwave"] svg:not(.mobile-tab-bar__icon) {
+  color: #b44fff;
+  filter: drop-shadow(0 0 4px rgba(180, 0, 255, 0.5));
+}
+
+[data-theme="vaporwave"] .mobile-tab-bar__icon {
+  color: var(--color-text-muted);
+  filter: none;
+}
+
+[data-theme="vaporwave"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
+  color: #00ffff;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.8));
+}
+
+[data-theme="vaporwave"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+}
+
+[data-theme="vaporwave"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+[data-theme="vaporwave"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
+  background: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+}
+
+[data-theme="vaporwave"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[data-theme="vaporwave"] ::-webkit-scrollbar-track {
+  background: #0d0015;
+}
+
+[data-theme="vaporwave"] ::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, #b44fff, #00ffff);
+}
+
+[data-theme="vaporwave"] ::selection {
+  background: rgba(180, 0, 255, 0.35);
+  color: white;
+}
+
+[data-theme="vaporwave"] form.mx-auto.max-w-2xl > details {
+  background: rgba(30, 0, 60, 0.75);
+  border-color: rgba(180, 0, 255, 0.4);
+}

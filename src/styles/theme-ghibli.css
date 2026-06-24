@@ -1,0 +1,244 @@
+@keyframes cloudDrift {
+  from {
+    transform: translateX(-200px);
+  }
+
+  to {
+    transform: translateX(110vw);
+  }
+}
+
+[data-theme="ghibli"] {
+  --color-bg: #87ceeb;
+  --color-surface: rgba(255, 252, 240, 0.88);
+  --color-surface-2: rgba(255, 250, 235, 0.85);
+  --color-text: #2c4a1e;
+  --color-text-muted: #5a7a3a;
+  --color-text-faint: #8aaa6a;
+  --color-primary: #4a7c3f;
+  --color-primary-highlight: rgba(74, 124, 63, 0.15);
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --muted: var(--color-text-muted);
+  --muted-light: var(--color-text-faint);
+  --surface: var(--color-surface);
+  --surface-muted: var(--color-surface-2);
+  --border-hairline: rgba(140, 180, 100, 0.3);
+  --border-subtle: rgba(140, 180, 100, 0.2);
+  --border: var(--border-hairline);
+  --accent: var(--color-primary);
+  --accent-muted: #7bc44f;
+  --color-text-muted: var(--color-text-muted);
+  --status-error: #8b4513;
+  --status-error-bg: rgba(255, 230, 220, 0.8);
+  --status-success: #2c6e1f;
+  --status-success-bg: rgba(220, 245, 210, 0.8);
+  --status-warning: #b8860b;
+  --status-warning-bg: rgba(255, 245, 210, 0.8);
+  --radius-full: 9999px;
+}
+
+[data-theme="ghibli"] body {
+  background: linear-gradient(
+    180deg,
+    #87ceeb 0%,
+    #b0dff0 25%,
+    #d4ecc8 55%,
+    #c8e6a0 75%,
+    #a8d878 100%
+  );
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: var(--font-nunito), "Quicksand", sans-serif !important;
+}
+
+[data-theme="ghibli"] .aero-background,
+[data-theme="ghibli"] .matrix-rain-canvas,
+[data-theme="ghibli"] .barbie-sparkles,
+[data-theme="ghibli"] .vaporwave-background {
+  display: none;
+}
+
+[data-theme="ghibli"] .ghibli-cloud {
+  position: fixed;
+  background: white;
+  border-radius: 999px;
+  opacity: 0.7;
+  filter: blur(2px);
+  animation: cloudDrift linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="ghibli"] .ghibli-cloud {
+    animation: none;
+  }
+}
+
+[data-theme="ghibli"] .ghibli-cloud-1 {
+  top: 8%;
+  width: 120px;
+  height: 40px;
+  box-shadow:
+    30px 10px 0 10px white,
+    60px 5px 0 5px white;
+}
+
+[data-theme="ghibli"] .ghibli-cloud-2 {
+  top: 18%;
+  width: 80px;
+  height: 30px;
+  box-shadow:
+    25px 8px 0 8px white,
+    50px 3px 0 5px white;
+}
+
+[data-theme="ghibli"] .ghibli-cloud-3 {
+  top: 12%;
+  width: 100px;
+  height: 35px;
+  box-shadow:
+    28px 8px 0 8px white,
+    55px 4px 0 6px white;
+}
+
+[data-theme="ghibli"] .ghibli-cloud-4 {
+  top: 25%;
+  width: 90px;
+  height: 32px;
+  box-shadow:
+    26px 7px 0 7px white,
+    52px 3px 0 5px white;
+}
+
+[data-theme="ghibli"] .font-display,
+[data-theme="ghibli"] .text-display,
+[data-theme="ghibli"] .text-display-lg,
+[data-theme="ghibli"] .text-title {
+  font-weight: 700;
+  color: #1e3d10;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="ghibli"] header {
+  background: rgba(240, 252, 225, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(140, 180, 100, 0.3);
+}
+
+[data-theme="ghibli"] nav.fixed.bottom-0 {
+  background: rgba(200, 230, 160, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(140, 180, 100, 0.4);
+}
+
+[data-theme="ghibli"] .surface-panel,
+[data-theme="ghibli"] .surface-card,
+[data-theme="ghibli"] .surface-editorial,
+[data-theme="ghibli"] .alert-error,
+[data-theme="ghibli"] .alert-success,
+[data-theme="ghibli"] .alert-warning,
+[data-theme="ghibli"] section.border,
+[data-theme="ghibli"] .grid.border,
+[data-theme="ghibli"] article a > div.overflow-hidden,
+[data-theme="ghibli"] li.border,
+[data-theme="ghibli"] details.border-b,
+[data-theme="ghibli"] button.border,
+[data-theme="ghibli"] button[class*="border-[var(--border"] {
+  background: rgba(255, 252, 240, 0.88);
+  border: 1px solid rgba(140, 180, 100, 0.3) !important;
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 4px 16px rgba(80, 120, 40, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="ghibli"] .input-field {
+  background: rgba(255, 252, 240, 0.95);
+  border: 1px solid rgba(140, 180, 100, 0.4);
+}
+
+[data-theme="ghibli"] .input-field:focus {
+  border-color: #4a7c3f;
+  box-shadow: 0 0 0 3px rgba(74, 124, 63, 0.15);
+}
+
+[data-theme="ghibli"] .btn-primary {
+  background: linear-gradient(135deg, #5a9e3f, #7bc44f);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 4px 12px rgba(80, 140, 40, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: white;
+  border-radius: var(--radius-full);
+}
+
+[data-theme="ghibli"] .btn-primary:hover {
+  opacity: 1;
+  box-shadow:
+    0 6px 16px rgba(80, 140, 40, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="ghibli"] .btn-secondary,
+[data-theme="ghibli"] .btn-ghost,
+[data-theme="ghibli"] .btn-icon,
+[data-theme="ghibli"] .btn-destructive {
+  background: rgba(255, 252, 240, 0.85);
+  border-color: rgba(140, 180, 100, 0.4);
+  color: var(--color-text);
+}
+
+[data-theme="ghibli"] svg:not(.mobile-tab-bar__icon) {
+  color: #4a7c3f;
+}
+
+[data-theme="ghibli"] .mobile-tab-bar__icon {
+  color: var(--color-text-muted);
+  filter: none;
+}
+
+[data-theme="ghibli"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
+  color: #2c6e1f;
+  filter: drop-shadow(0 1px 3px rgba(80, 140, 40, 0.4));
+}
+
+[data-theme="ghibli"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
+  background: rgba(74, 124, 63, 0.12);
+  border: 1px solid rgba(140, 180, 100, 0.4);
+  border-radius: var(--radius-full);
+}
+
+[data-theme="ghibli"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
+  color: #2c6e1f;
+  font-weight: 600;
+}
+
+[data-theme="ghibli"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
+  background: #2c6e1f;
+}
+
+[data-theme="ghibli"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[data-theme="ghibli"] ::-webkit-scrollbar-track {
+  background: rgba(200, 230, 160, 0.3);
+}
+
+[data-theme="ghibli"] ::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: #5a9e3f;
+}
+
+[data-theme="ghibli"] ::selection {
+  background: rgba(74, 124, 63, 0.25);
+  color: #1e3d10;
+}
+
+[data-theme="ghibli"] form.mx-auto.max-w-2xl > details {
+  background: rgba(255, 252, 240, 0.88);
+  border-color: rgba(140, 180, 100, 0.3);
+}

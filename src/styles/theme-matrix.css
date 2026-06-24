@@ -41,7 +41,10 @@
   font-family: "Courier New", "Lucida Console", monospace !important;
 }
 
-[data-theme="matrix"] .aero-background {
+[data-theme="matrix"] .aero-background,
+[data-theme="matrix"] .barbie-sparkles,
+[data-theme="matrix"] .vaporwave-background,
+[data-theme="matrix"] .ghibli-clouds {
   display: none;
 }
 

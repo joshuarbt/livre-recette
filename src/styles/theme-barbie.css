@@ -1,0 +1,238 @@
+@keyframes barbieGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes barbieTwinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+[data-theme="barbie"] {
+  --color-bg: #ff69b4;
+  --color-surface: rgba(255, 255, 255, 0.75);
+  --color-surface-2: rgba(255, 255, 255, 0.65);
+  --color-text: #8b0057;
+  --color-text-muted: #c2185b;
+  --color-text-faint: #e91e8c;
+  --color-primary: #ff1493;
+  --color-primary-highlight: rgba(255, 20, 147, 0.15);
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --muted: var(--color-text-muted);
+  --muted-light: var(--color-text-faint);
+  --surface: var(--color-surface);
+  --surface-muted: var(--color-surface-2);
+  --border-hairline: rgba(255, 20, 147, 0.3);
+  --border-subtle: rgba(255, 105, 180, 0.25);
+  --border: var(--border-hairline);
+  --accent: var(--color-primary);
+  --accent-muted: #ff69b4;
+  --color-text-muted: var(--color-text-muted);
+  --status-error: #c62828;
+  --status-error-bg: rgba(255, 200, 200, 0.7);
+  --status-success: #2e7d32;
+  --status-success-bg: rgba(200, 255, 200, 0.7);
+  --status-warning: #ef6c00;
+  --status-warning-bg: rgba(255, 240, 200, 0.7);
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+[data-theme="barbie"] body {
+  background: linear-gradient(
+    135deg,
+    #ff85c2 0%,
+    #ff1493 25%,
+    #ff69b4 50%,
+    #ffb3de 75%,
+    #ffe4f0 100%
+  );
+  background-size: 300% 300%;
+  animation: barbieGradient 6s ease infinite;
+  color: var(--color-text);
+  font-family: var(--font-nunito), "Quicksand", sans-serif !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="barbie"] body {
+    animation: none;
+    background-position: 0% 50%;
+  }
+}
+
+[data-theme="barbie"] .aero-background,
+[data-theme="barbie"] .matrix-rain-canvas,
+[data-theme="barbie"] .vaporwave-background,
+[data-theme="barbie"] .ghibli-clouds {
+  display: none;
+}
+
+[data-theme="barbie"] .barbie-sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: barbieTwinkle 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="barbie"] .barbie-sparkle {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+[data-theme="barbie"] .font-display,
+[data-theme="barbie"] .text-display,
+[data-theme="barbie"] .text-display-lg,
+[data-theme="barbie"] .text-title {
+  font-weight: 800;
+  color: #8b0057;
+  text-shadow: 0 2px 4px rgba(255, 20, 147, 0.2);
+}
+
+[data-theme="barbie"] header,
+[data-theme="barbie"] nav.fixed.bottom-0 {
+  background: rgba(255, 20, 147, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="barbie"] header a,
+[data-theme="barbie"] header button,
+[data-theme="barbie"] nav.fixed.bottom-0 a,
+[data-theme="barbie"] nav.fixed.bottom-0 .mobile-tab-bar__label {
+  color: white;
+}
+
+[data-theme="barbie"] .surface-panel,
+[data-theme="barbie"] .surface-card,
+[data-theme="barbie"] .surface-editorial,
+[data-theme="barbie"] .alert-error,
+[data-theme="barbie"] .alert-success,
+[data-theme="barbie"] .alert-warning,
+[data-theme="barbie"] section.border,
+[data-theme="barbie"] .grid.border,
+[data-theme="barbie"] article a > div.overflow-hidden,
+[data-theme="barbie"] li.border,
+[data-theme="barbie"] details.border-b,
+[data-theme="barbie"] button.border,
+[data-theme="barbie"] button[class*="border-[var(--border"] {
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid rgba(255, 20, 147, 0.3) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow:
+    0 8px 24px rgba(255, 20, 147, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="barbie"] .input-field {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 105, 180, 0.4);
+  border-radius: 999px !important;
+}
+
+[data-theme="barbie"] .input-field:focus {
+  border-color: #ff1493;
+  box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.15);
+}
+
+[data-theme="barbie"] .btn-primary {
+  background: linear-gradient(135deg, #ff1493, #ff69b4);
+  border: none;
+  border-radius: 999px;
+  box-shadow:
+    0 4px 15px rgba(255, 20, 147, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="barbie"] .btn-primary:hover {
+  opacity: 1;
+  box-shadow:
+    0 6px 20px rgba(255, 20, 147, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="barbie"] .btn-secondary,
+[data-theme="barbie"] .btn-ghost,
+[data-theme="barbie"] .btn-icon,
+[data-theme="barbie"] .btn-destructive {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 105, 180, 0.4);
+}
+
+[data-theme="barbie"] svg:not(.mobile-tab-bar__icon) {
+  color: #ff1493;
+}
+
+[data-theme="barbie"] .mobile-tab-bar__icon {
+  color: rgba(255, 255, 255, 0.75);
+  filter: none;
+}
+
+[data-theme="barbie"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
+  color: white;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+
+[data-theme="barbie"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-full);
+}
+
+[data-theme="barbie"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
+  color: white;
+  font-weight: 700;
+}
+
+[data-theme="barbie"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
+  background: white;
+}
+
+[data-theme="barbie"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[data-theme="barbie"] ::-webkit-scrollbar-track {
+  background: rgba(255, 182, 193, 0.3);
+}
+
+[data-theme="barbie"] ::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: #ff1493;
+}
+
+[data-theme="barbie"] ::selection {
+  background: rgba(255, 20, 147, 0.3);
+  color: #8b0057;
+}
+
+[data-theme="barbie"] form.mx-auto.max-w-2xl > details {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 20, 147, 0.3);
+  border-radius: var(--radius-xl);
+}

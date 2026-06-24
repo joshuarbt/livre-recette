@@ -58,7 +58,11 @@
   background-attachment: fixed;
 }
 
-[data-theme="aero"] .aero-background {
+[data-theme="aero"] .aero-background,
+[data-theme="aero"] .matrix-rain-canvas,
+[data-theme="aero"] .barbie-sparkles,
+[data-theme="aero"] .vaporwave-background,
+[data-theme="aero"] .ghibli-clouds {
   display: none;
 }
 
