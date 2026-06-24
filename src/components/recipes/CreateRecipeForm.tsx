@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IngredientAutocomplete } from "@/components/IngredientAutocomplete";
+import { RecipeStepRow } from "@/components/recipes/RecipeStepRow";
 import { Icon } from "@/components/ui/Icon";
 import { validateCreateRecipeForm } from "@/lib/recipes/form-validation";
 import { actionIcons } from "@/lib/icons";
@@ -448,69 +449,42 @@ export function CreateRecipeForm({
       <RecipeFormSection title="Étapes de préparation">
         <ul className="space-y-4">
           {values.steps.map((row, index) => (
-            <li key={row.clientId} className="space-y-2">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-caption font-medium">Étape {index + 1}</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  disabled={isSubmitting || index === 0}
-                  onClick={() =>
-                    setValues((current) => ({
-                      ...current,
-                      steps: moveStep(current.steps, row.clientId, -1),
-                    }))
-                  }
-                  className="btn-ghost text-sm disabled:opacity-40"
-                >
-                  Monter
-                </button>
-                <button
-                  type="button"
-                  disabled={isSubmitting || index === values.steps.length - 1}
-                  onClick={() =>
-                    setValues((current) => ({
-                      ...current,
-                      steps: moveStep(current.steps, row.clientId, 1),
-                    }))
-                  }
-                  className="btn-ghost text-sm disabled:opacity-40"
-                >
-                  Descendre
-                </button>
-                <button
-                  type="button"
-                  disabled={isSubmitting || values.steps.length === 1}
-                  onClick={() =>
-                    setValues((current) => ({
-                      ...current,
-                      steps: current.steps.filter((item) => item.clientId !== row.clientId),
-                    }))
-                  }
-                  className="btn-ghost text-sm text-[var(--status-error)] disabled:opacity-40"
-                >
-                  Retirer
-                </button>
-              </div>
-              </div>
-              <textarea
-                value={row.instruction}
-                disabled={isSubmitting}
-                rows={3}
-                onChange={(event) =>
-                  setValues((current) => ({
-                    ...current,
-                    steps: current.steps.map((item) =>
-                      item.clientId === row.clientId
-                        ? { ...item, instruction: event.target.value }
-                        : item,
-                    ),
-                  }))
-                }
-                className="input-field"
-              />
-              <FieldError message={fieldErrors.stepRows?.[row.clientId]?.instruction} />
-            </li>
+            <RecipeStepRow
+              key={row.clientId}
+              stepNumber={index + 1}
+              instruction={row.instruction}
+              isFirst={index === 0}
+              isLast={index === values.steps.length - 1}
+              isOnly={values.steps.length === 1}
+              isSubmitting={isSubmitting}
+              error={fieldErrors.stepRows?.[row.clientId]?.instruction}
+              onInstructionChange={(instruction) =>
+                setValues((current) => ({
+                  ...current,
+                  steps: current.steps.map((item) =>
+                    item.clientId === row.clientId ? { ...item, instruction } : item,
+                  ),
+                }))
+              }
+              onMoveUp={() =>
+                setValues((current) => ({
+                  ...current,
+                  steps: moveStep(current.steps, row.clientId, -1),
+                }))
+              }
+              onMoveDown={() =>
+                setValues((current) => ({
+                  ...current,
+                  steps: moveStep(current.steps, row.clientId, 1),
+                }))
+              }
+              onRemove={() =>
+                setValues((current) => ({
+                  ...current,
+                  steps: current.steps.filter((item) => item.clientId !== row.clientId),
+                }))
+              }
+            />
           ))}
         </ul>
         <button
