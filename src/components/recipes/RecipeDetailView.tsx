@@ -8,7 +8,7 @@ import { RecipeServingsSelector } from "@/components/recipes/RecipeServingsSelec
 import { Icon } from "@/components/ui/Icon";
 import { downloadRecipeExport } from "@/lib/export-import";
 import { actionIcons } from "@/lib/icons";
-import { deleteRecipe } from "@/lib/recipes/actions";
+import { clearRecipeImage, deleteRecipe } from "@/lib/recipes/actions";
 import type { RecipeDetail } from "@/types/recipes";
 import { getRecipeCategoryLabel } from "@/types/recipes";
 import { formatServingsLabel } from "@/types/meal-plan";
@@ -35,9 +35,26 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isClearingImage, startClearImageTransition] = useTransition();
   const baseServings = getBaseServings(recipe.servings);
   const [selectedServings, setSelectedServings] = useState(baseServings);
   const ratio = computeServingsRatio(selectedServings, baseServings);
+
+  function handleClearImage() {
+    if (!window.confirm("Supprimer la photo de cette recette ?")) {
+      return;
+    }
+
+    setError(null);
+    startClearImageTransition(async () => {
+      const result = await clearRecipeImage(recipe.id);
+      if (!result.success) {
+        setError(result.error);
+      } else {
+        router.refresh();
+      }
+    });
+  }
 
   function handleDelete() {
     if (!window.confirm("Supprimer cette recette ?")) {
@@ -70,14 +87,25 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
         </p>
       ) : null}
       {recipe.imageUrl ? (
-        <div className="overflow-hidden bg-[var(--surface-muted)]">
-          <Image
-            src={recipe.imageUrl}
-            alt={recipe.title}
-            width={800}
-            height={600}
-            className="aspect-[4/3] w-full object-cover"
-          />
+        <div className="space-y-2">
+          <div className="overflow-hidden bg-[var(--surface-muted)]">
+            <Image
+              src={recipe.imageUrl}
+              alt={recipe.title}
+              width={800}
+              height={600}
+              className="aspect-[4/3] w-full object-cover"
+            />
+          </div>
+          <button
+            type="button"
+            disabled={isClearingImage}
+            onClick={handleClearImage}
+            className="btn-ghost inline-flex items-center gap-2 text-sm text-[var(--muted)] disabled:opacity-60"
+          >
+            <Icon icon={actionIcons.trash} size="sm" />
+            {isClearingImage ? "Suppression…" : "Supprimer la photo"}
+          </button>
         </div>
       ) : null}
 

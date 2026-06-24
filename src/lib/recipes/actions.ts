@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { parseCreateRecipePayload } from "@/lib/recipes/validation";
+import {
+  getRecipeImagePathFromUrl,
+  RECIPE_IMAGES_BUCKET,
+} from "@/lib/storage/recipe-images";
 import { createClient } from "@/lib/supabase/server";
 import type { CreateRecipeActionResult, CreateRecipePayload, RecipeActionResult } from "@/types/recipes";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -351,4 +355,56 @@ export async function deleteRecipe(id: string): Promise<RecipeActionResult> {
 
   revalidateRecipePaths();
   redirect("/");
+}
+
+export async function clearRecipeImage(recipeId: string): Promise<RecipeActionResult> {
+  const userResult = await requireUserId();
+  if (typeof userResult !== "string") {
+    return userResult;
+  }
+
+  const supabase = await createClient();
+
+  const { data: recipe, error: fetchError } = await supabase
+    .from("recipes")
+    .select("image_url")
+    .eq("id", recipeId)
+    .eq("user_id", userResult)
+    .maybeSingle();
+
+  if (fetchError) {
+    return { success: false, error: fetchError.message };
+  }
+
+  if (!recipe) {
+    return { success: false, error: "Recette introuvable." };
+  }
+
+  const currentImageUrl = recipe.image_url as string | null;
+
+  if (currentImageUrl) {
+    const path = getRecipeImagePathFromUrl(currentImageUrl);
+    if (path) {
+      const { error: storageError } = await supabase.storage
+        .from(RECIPE_IMAGES_BUCKET)
+        .remove([path]);
+
+      if (storageError) {
+        return { success: false, error: storageError.message };
+      }
+    }
+  }
+
+  const { error: updateError } = await supabase
+    .from("recipes")
+    .update({ image_url: null })
+    .eq("id", recipeId)
+    .eq("user_id", userResult);
+
+  if (updateError) {
+    return { success: false, error: updateError.message };
+  }
+
+  revalidateRecipePaths(recipeId);
+  return { success: true };
 }

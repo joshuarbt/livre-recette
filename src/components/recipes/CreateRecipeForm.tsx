@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IngredientAutocomplete } from "@/components/IngredientAutocomplete";
+import { RecipePhotoField } from "@/components/recipes/RecipePhotoField";
 import { RecipeStepRow } from "@/components/recipes/RecipeStepRow";
 import { Icon } from "@/components/ui/Icon";
 import { validateCreateRecipeForm } from "@/lib/recipes/form-validation";
@@ -207,66 +208,12 @@ export function CreateRecipeForm({
       </RecipeFormSection>
 
       <RecipeFormSection title="Photo">
-        {mode === "edit" && values.imageUrl ? (
-          <div className="mb-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={values.imageUrl}
-              alt="Photo actuelle de la recette"
-              className="h-24 w-24 rounded-sm border border-[var(--border-hairline)] object-cover"
-            />
-          </div>
-        ) : null}
-        <div className="flex gap-4">
-          <label className="flex cursor-pointer items-center gap-2 text-sm">
-            <input
-              type="radio"
-              name="imageMode"
-              checked={values.imageMode === "url"}
-              disabled={isSubmitting}
-              onChange={() => updateField("imageMode", "url")}
-            />
-            URL
-          </label>
-          <label className="flex cursor-pointer items-center gap-2 text-sm">
-            <input
-              type="radio"
-              name="imageMode"
-              checked={values.imageMode === "file"}
-              disabled={isSubmitting}
-              onChange={() => updateField("imageMode", "file")}
-            />
-            Fichier
-          </label>
-        </div>
-
-        {values.imageMode === "url" ? (
-          <label className="block space-y-2">
-            <span className="input-label">URL de la photo</span>
-            <input
-              type="url"
-              value={values.imageUrl}
-              disabled={isSubmitting}
-              onChange={(event) => updateField("imageUrl", event.target.value)}
-              className="input-field"
-              placeholder="https://…"
-            />
-            <FieldError message={fieldErrors.imageUrl} />
-          </label>
-        ) : (
-          <label className="block space-y-2">
-            <span className="input-label">Fichier image</span>
-            <input
-              type="file"
-              accept="image/*"
-              disabled={isSubmitting}
-              onChange={(event) =>
-                updateField("imageFile", event.target.files?.[0] ?? null)
-              }
-              className="input-field"
-            />
-          </label>
-        )}
+        <RecipePhotoField
+          values={values}
+          isSubmitting={isSubmitting}
+          imageError={fieldErrors.imageUrl}
+          onChange={(patch) => setValues((current) => ({ ...current, ...patch }))}
+        />
       </RecipeFormSection>
 
       <RecipeFormSection title="Ingrédients">

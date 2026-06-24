@@ -10,6 +10,7 @@ import {
   Plus,
   ShoppingCart,
   Snowflake,
+  Trash2,
   Upload,
   X,
 } from "lucide-react";
@@ -29,6 +30,7 @@ export const actionIcons = {
   download: Download,
   expand: ChevronDown,
   link: Link2,
+  trash: Trash2,
   upload: Upload,
   weekPrev: ChevronLeft,
   weekNext: ChevronRight,

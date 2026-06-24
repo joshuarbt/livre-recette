@@ -71,6 +71,7 @@ export type CreateRecipeFormValues = {
   imageMode: "url" | "file";
   imageUrl: string;
   imageFile: File | null;
+  imageCleared: boolean;
   ingredients: RecipeIngredientFormRow[];
   utensils: RecipeUtensilFormRow[];
   steps: RecipeStepFormRow[];
@@ -146,6 +147,7 @@ export function createDefaultCreateRecipeFormValues(): CreateRecipeFormValues {
     imageMode: "url",
     imageUrl: "",
     imageFile: null,
+    imageCleared: false,
     ingredients: [createEmptyIngredientRow()],
     utensils: [],
     steps: [createEmptyStepRow()],
@@ -173,6 +175,7 @@ export function recipeDetailToCreateRecipeFormValues(recipe: RecipeDetail): Crea
     imageMode: "url",
     imageUrl: recipe.imageUrl ?? "",
     imageFile: null,
+    imageCleared: false,
     ingredients:
       recipe.ingredients.length > 0
         ? recipe.ingredients.map((ingredient) => ({

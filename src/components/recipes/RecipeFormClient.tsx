@@ -65,7 +65,9 @@ export function RecipeFormClient(props: RecipeFormClientProps) {
 
     let imageUrl = payload.imageUrl;
 
-    if (values.imageMode === "file") {
+    if (values.imageCleared) {
+      imageUrl = null;
+    } else if (values.imageMode === "file") {
       if (values.imageFile) {
         const uploadResult = await uploadRecipeImage(values.imageFile, props.userId);
         if ("error" in uploadResult) {
@@ -79,6 +81,10 @@ export function RecipeFormClient(props: RecipeFormClientProps) {
         setServerErrors({ imageUrl: "Sélectionnez une image à téléverser." });
         return;
       }
+    } else if (values.imageMode === "url") {
+      imageUrl = payload.imageUrl;
+    } else if (props.mode === "edit" && props.initialRecipe.imageUrl) {
+      imageUrl = props.initialRecipe.imageUrl;
     }
 
     const finalPayload = { ...payload, imageUrl };

@@ -34,6 +34,7 @@ export function importedRecipeToFormValues(data: ImportedRecipeData): Serializab
     imageMode: "url",
     imageUrl: data.imageUrl ?? "",
     imageFile: null,
+    imageCleared: false,
     ingredients,
     utensils: [],
     steps,
