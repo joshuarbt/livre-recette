@@ -15,8 +15,22 @@ type PlanningPageProps = {
     week?: string;
     recipeId?: string;
     fromFreezer?: string;
+    servings?: string;
   }>;
 };
+
+function parsePreselectedServings(rawServings: string | undefined): number | undefined {
+  if (!rawServings) {
+    return undefined;
+  }
+
+  const parsed = Number(rawServings);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return undefined;
+  }
+
+  return parsed;
+}
 
 function parseWeekStart(rawWeek: string | undefined): string {
   if (rawWeek && isValidPlanDate(rawWeek)) {
@@ -47,6 +61,7 @@ export default async function PlanningPage({ searchParams }: PlanningPageProps) 
 
   const preselectedRecipeId = params.recipeId;
   const preselectedFromFreezerId = params.fromFreezer;
+  const preselectedServings = parsePreselectedServings(params.servings);
 
   return (
     <PageShell
@@ -61,7 +76,7 @@ export default async function PlanningPage({ searchParams }: PlanningPageProps) 
         />
       ) : (
         <MealPlanCalendar
-          key={`${mealPlanData.weekStart}-${preselectedRecipeId ?? ""}-${preselectedFromFreezerId ?? ""}`}
+          key={`${mealPlanData.weekStart}-${preselectedRecipeId ?? ""}-${preselectedFromFreezerId ?? ""}-${preselectedServings ?? ""}`}
           userId={user.id}
           initialWeekStart={mealPlanData.weekStart}
           initialEntries={mealPlanData.entries}
@@ -69,6 +84,7 @@ export default async function PlanningPage({ searchParams }: PlanningPageProps) 
           freezerEntries={freezerInventory.entries}
           preselectedRecipeId={preselectedRecipeId}
           preselectedFromFreezerId={preselectedFromFreezerId}
+          preselectedServings={preselectedServings}
         />
       )}
     </PageShell>

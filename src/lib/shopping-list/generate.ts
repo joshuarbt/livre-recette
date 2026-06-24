@@ -190,7 +190,7 @@ export async function generateShoppingList(
       aggregatedItems.map((item) => ({
         shopping_list_id: shoppingListId,
         ingredient_id: item.ingredientId,
-        total_quantity: item.totalQuantity,
+        total_quantity: item.hasQuantity ? (item.totalQuantity ?? 0) : 0,
         unit: item.unit,
         is_checked: checkedByIngredient.get(item.ingredientId) ?? false,
       })),

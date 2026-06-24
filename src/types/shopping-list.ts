@@ -47,8 +47,9 @@ export type RecipeIngredientRow = {
 export type AggregatedIngredient = {
   ingredientId: string;
   ingredientName: string;
-  totalQuantity: number;
+  totalQuantity: number | null;
   unit: string;
+  hasQuantity: boolean;
 };
 
 export type FetchShoppingListResult =

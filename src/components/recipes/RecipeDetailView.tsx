@@ -4,12 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { RecipeServingsSelector } from "@/components/recipes/RecipeServingsSelector";
 import { Icon } from "@/components/ui/Icon";
 import { downloadRecipeExport } from "@/lib/export-import";
 import { actionIcons } from "@/lib/icons";
 import { deleteRecipe } from "@/lib/recipes/actions";
 import type { RecipeDetail } from "@/types/recipes";
-import { formatRecipeServings, getRecipeCategoryLabel } from "@/types/recipes";
+import { getRecipeCategoryLabel } from "@/types/recipes";
+import { formatServingsLabel } from "@/types/meal-plan";
+import {
+  computeServingsRatio,
+  formatScaledQuantity,
+  getBaseServings,
+  scaleQuantity,
+} from "@/utils/recipe-servings";
 
 type RecipeDetailViewProps = {
   recipe: RecipeDetail;
@@ -27,6 +35,9 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const baseServings = getBaseServings(recipe.servings);
+  const [selectedServings, setSelectedServings] = useState(baseServings);
+  const ratio = computeServingsRatio(selectedServings, baseServings);
 
   function handleDelete() {
     if (!window.confirm("Supprimer cette recette ?")) {
@@ -73,7 +84,7 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
       <div className="space-y-3">
         <h2 className="text-display">{recipe.title}</h2>
         <p className="text-caption text-[var(--muted)]">
-          {[categoryLabel, formatRecipeServings(recipe.servings), ...timingParts]
+          {[categoryLabel, formatServingsLabel(selectedServings), ...timingParts]
             .filter((part) => part && part !== "—")
             .join(" · ")}
         </p>
@@ -85,6 +96,11 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
       {recipe.ingredients.length > 0 ? (
         <section className="space-y-3">
           <h3 className="text-overline">Ingrédients</h3>
+          <RecipeServingsSelector
+            baseServings={baseServings}
+            value={selectedServings}
+            onChange={setSelectedServings}
+          />
           <ul className="space-y-2">
             {recipe.ingredients.map((ingredient) => (
               <li
@@ -93,7 +109,7 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
               >
                 <span>{ingredient.name}</span>
                 <span className="text-[var(--muted)]">
-                  {ingredient.quantity} {ingredient.unit}
+                  {formatScaledQuantity(scaleQuantity(ingredient.quantity, ratio))} {ingredient.unit}
                 </span>
               </li>
             ))}
@@ -127,6 +143,12 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
       ) : null}
 
       <div className="flex flex-wrap gap-4">
+        <Link
+          href={`/planning?recipeId=${recipe.id}&servings=${selectedServings}`}
+          className="btn-ghost text-sm"
+        >
+          Ajouter au planning
+        </Link>
         <button
           type="button"
           onClick={() => downloadRecipeExport(recipe)}

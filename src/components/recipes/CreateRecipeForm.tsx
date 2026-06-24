@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { IngredientAutocomplete } from "@/components/IngredientAutocomplete";
 import { Icon } from "@/components/ui/Icon";
 import { validateCreateRecipeForm } from "@/lib/recipes/form-validation";
 import { actionIcons } from "@/lib/icons";
@@ -271,21 +272,31 @@ export function CreateRecipeForm({
             >
               <label className="block space-y-1">
                 <span className="text-caption">Nom</span>
-                <input
-                  type="text"
+                <IngredientAutocomplete
                   value={row.name}
                   disabled={isSubmitting}
-                  onChange={(event) =>
+                  onChange={(name) =>
+                    setValues((current) => ({
+                      ...current,
+                      ingredients: current.ingredients.map((item) =>
+                        item.clientId === row.clientId ? { ...item, name } : item,
+                      ),
+                    }))
+                  }
+                  onSelect={(ingredient) =>
                     setValues((current) => ({
                       ...current,
                       ingredients: current.ingredients.map((item) =>
                         item.clientId === row.clientId
-                          ? { ...item, name: event.target.value }
+                          ? {
+                              ...item,
+                              name: ingredient.name,
+                              unit: ingredient.unit?.trim() ?? "",
+                            }
                           : item,
                       ),
                     }))
                   }
-                  className="input-field"
                 />
                 <FieldError message={fieldErrors.ingredientRows?.[row.clientId]?.name} />
               </label>

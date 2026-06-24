@@ -5,6 +5,7 @@ type ShoppingListItemProps = {
   quantity: number;
   unit: string;
   isChecked: boolean;
+  showQuantity?: boolean;
   disabled?: boolean;
   onToggle: () => void;
 };
@@ -14,9 +15,12 @@ export function ShoppingListItemRow({
   quantity,
   unit,
   isChecked,
+  showQuantity = true,
   disabled = false,
   onToggle,
 }: ShoppingListItemProps) {
+  const shouldShowQuantity = showQuantity && quantity > 0;
+
   return (
     <button
       type="button"
@@ -32,9 +36,11 @@ export function ShoppingListItemRow({
         >
           {name}
         </span>
-        <span className="text-caption mt-0.5 block text-[var(--muted)]">
-          {formatQuantity(quantity)} {unit}
-        </span>
+        {shouldShowQuantity ? (
+          <span className="text-caption mt-0.5 block text-[var(--muted)]">
+            {formatQuantity(quantity)} {unit}
+          </span>
+        ) : null}
       </span>
       <span
         aria-hidden="true"

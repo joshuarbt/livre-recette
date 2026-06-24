@@ -39,6 +39,41 @@ function resolveUnit(ingredientUnit: string | null): string {
   return trimmed && trimmed.length > 0 ? trimmed : "unité";
 }
 
+function normalizeUnit(unit: string): string {
+  return unit.trim().toLocaleLowerCase("fr");
+}
+
+function aggregationKey(ingredientId: string, unit: string): string {
+  return `${ingredientId}::${normalizeUnit(unit)}`;
+}
+
+function scaleRowQuantity(quantity: number, scale: number): number | null {
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    return null;
+  }
+
+  const scaled = quantity * scale;
+  if (!Number.isFinite(scaled) || scaled <= 0) {
+    return null;
+  }
+
+  return scaled;
+}
+
+function mergeQuantities(existing: AggregatedIngredient, scaledQuantity: number | null): void {
+  if (scaledQuantity === null) {
+    return;
+  }
+
+  if (existing.hasQuantity && existing.totalQuantity !== null) {
+    existing.totalQuantity += scaledQuantity;
+    return;
+  }
+
+  existing.totalQuantity = scaledQuantity;
+  existing.hasQuantity = true;
+}
+
 export function computeEffectiveServingsByMeal(
   plannedMeals: PlannedMeal[],
   freezerStock: FreezerStock[],
@@ -88,24 +123,22 @@ export function computeShoppingListItems(
     const scale = effectiveServings / safeRecipeServings;
 
     for (const row of rows) {
-      const scaledQuantity = row.quantity * scale;
-      if (scaledQuantity <= 0) {
-        continue;
-      }
-
+      const scaledQuantity = scaleRowQuantity(row.quantity, scale);
       const unit = resolveUnit(row.ingredientUnit);
-      const existing = aggregated.get(row.ingredientId);
+      const key = aggregationKey(row.ingredientId, unit);
+      const existing = aggregated.get(key);
 
       if (existing) {
-        existing.totalQuantity += scaledQuantity;
+        mergeQuantities(existing, scaledQuantity);
         continue;
       }
 
-      aggregated.set(row.ingredientId, {
+      aggregated.set(key, {
         ingredientId: row.ingredientId,
         ingredientName: row.ingredientName,
         totalQuantity: scaledQuantity,
         unit,
+        hasQuantity: scaledQuantity !== null,
       });
     }
   }

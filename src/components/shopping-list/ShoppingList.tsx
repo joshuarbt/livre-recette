@@ -115,6 +115,7 @@ export function ShoppingList({
               name={item.ingredientName}
               quantity={item.totalQuantity}
               unit={item.unit}
+              showQuantity={item.totalQuantity > 0}
               isChecked={item.isChecked}
               disabled={isPending || isToggling}
               onToggle={() => handleToggle(item.id, !item.isChecked)}

@@ -21,6 +21,7 @@ type MealPlanCalendarProps = {
   freezerEntries?: FreezerEntry[];
   preselectedRecipeId?: string;
   preselectedFromFreezerId?: string;
+  preselectedServings?: number;
 };
 
 type SelectedSlot = {
@@ -40,6 +41,7 @@ export function MealPlanCalendar({
   freezerEntries = [],
   preselectedRecipeId,
   preselectedFromFreezerId,
+  preselectedServings,
 }: MealPlanCalendarProps) {
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const today = getTodayDate();
@@ -168,6 +170,7 @@ export function MealPlanCalendar({
           freezerEntries={freezerEntries}
           preselectedRecipeId={preselectedRecipeId}
           preselectedFromFreezerId={preselectedFromFreezerId}
+          preselectedServings={preselectedServings}
           onClose={() => setSelectedSlot(null)}
           onAssign={async (recipeId, servingsPlanned, freezerServingsToUse) => {
             const result = await addMeal(

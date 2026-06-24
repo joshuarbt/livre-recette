@@ -21,6 +21,7 @@ type AssignMealModalProps = {
   freezerEntries?: FreezerEntry[];
   preselectedRecipeId?: string;
   preselectedFromFreezerId?: string;
+  preselectedServings?: number;
   onClose: () => void;
   onAssign: (
     recipeId: string,
@@ -42,6 +43,7 @@ export function AssignMealModal({
   freezerEntries = [],
   preselectedRecipeId,
   preselectedFromFreezerId,
+  preselectedServings,
   onClose,
   onAssign,
   onRemove,
@@ -52,9 +54,12 @@ export function AssignMealModal({
 
   const [isChanging, setIsChanging] = useState(!currentEntry);
   const [selectedRecipeId, setSelectedRecipeId] = useState(initialRecipeId);
-  const [servingsInput, setServingsInput] = useState(
-    String(currentEntry?.servingsPlanned ?? 2),
-  );
+  const [servingsInput, setServingsInput] = useState(() => {
+    if (preselectedRecipeId && preselectedServings) {
+      return String(preselectedServings);
+    }
+    return String(currentEntry?.servingsPlanned ?? 2);
+  });
   const [useFreezer, setUseFreezer] = useState(Boolean(preselectedFromFreezerId));
   const [freezerServingsInput, setFreezerServingsInput] = useState("1");
   const [error, setError] = useState<string | null>(null);
