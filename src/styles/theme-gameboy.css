@@ -76,6 +76,12 @@
   box-shadow: 0 4px 0 var(--gb-darkest);
 }
 
+[data-theme="gameboy"] nav.fixed.bottom-0 a,
+[data-theme="gameboy"] nav.fixed.bottom-0 .mobile-tab-bar__label,
+[data-theme="gameboy"] nav.fixed.bottom-0 .mobile-tab-bar__icon {
+  color: var(--gb-lightest);
+}
+
 [data-theme="gameboy"] header a,
 [data-theme="gameboy"] header button:not(.btn-primary) {
   color: var(--gb-lightest);
@@ -163,30 +169,38 @@
 }
 
 [data-theme="gameboy"] .mobile-tab-bar__icon {
-  color: var(--gb-dark);
+  color: var(--gb-lightest);
+  opacity: 0.6;
   filter: none;
 }
 
+[data-theme="gameboy"] .mobile-tab-bar__label {
+  color: var(--gb-lightest);
+  opacity: 0.6;
+}
+
 [data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
-  color: var(--gb-darkest);
+  color: var(--gb-lightest);
+  opacity: 1;
 }
 
 [data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
-  background: var(--gb-light);
+  background: var(--gb-darkest);
   border: 2px solid var(--gb-darkest);
   border-radius: 0;
   box-shadow: 2px 2px 0 var(--gb-darkest);
 }
 
 [data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
-  color: var(--gb-darkest);
+  color: var(--gb-lightest);
+  opacity: 1;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 [data-theme="gameboy"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
-  background: var(--gb-darkest);
+  background: var(--gb-lightest);
 }
 
 [data-theme="gameboy"] ::-webkit-scrollbar {

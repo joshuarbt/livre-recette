@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { RecipeListItem } from "@/types/recipes";
-import { formatRecipeServings } from "@/types/recipes";
+import { formatRecipeServings, getRecipeCategoryLabel } from "@/types/recipes";
 
 type RecipeCardProps = {
   recipe: RecipeListItem;
 };
 
 export function RecipeCard({ recipe }: RecipeCardProps) {
+  const categoryLabel = getRecipeCategoryLabel(recipe.category);
+
   return (
     <article>
       <Link href={`/recipes/${recipe.id}`} className="block active:opacity-80">
@@ -29,7 +31,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
         <div className="mt-4 space-y-1">
           <h2 className="text-heading leading-snug">{recipe.title}</h2>
           <p className="text-caption truncate">
-            {[recipe.category, formatRecipeServings(recipe.servings)]
+            {[categoryLabel, formatRecipeServings(recipe.servings)]
               .filter((part) => part && part !== "—")
               .join(" · ") || "Recette"}
           </p>

@@ -1,4 +1,5 @@
 export const RECIPE_CATEGORIES = [
+  { value: "petit-dejeuner", label: "Petit-déjeuner" },
   { value: "entree", label: "Entrée" },
   { value: "plat", label: "Plat" },
   { value: "dessert", label: "Dessert" },
