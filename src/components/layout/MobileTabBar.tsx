@@ -53,13 +53,19 @@ export function MobileTabBar() {
             <Link
               key={href}
               href={href}
-              className={`flex min-h-[var(--touch-min)] flex-1 flex-col items-center justify-center gap-0.5 px-1 py-1 transition-opacity ${
-                active ? "text-[var(--foreground)]" : "text-[var(--muted)]"
-              }`}
+              className="mobile-tab-bar__link"
               aria-current={active ? "page" : undefined}
             >
-              <Icon icon={icon} size="md" weight={active ? "active" : "regular"} />
-              <span className="text-[0.625rem] font-normal tracking-wide">{label}</span>
+              <span className="mobile-tab-bar__indicator" aria-hidden />
+              <span className="mobile-tab-bar__icon-pill">
+                <Icon
+                  icon={icon}
+                  size="md"
+                  weight={active ? "active" : "regular"}
+                  className="mobile-tab-bar__icon"
+                />
+              </span>
+              <span className="mobile-tab-bar__label">{label}</span>
             </Link>
           );
         })}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { AppNavUser } from "@/components/layout/AppNavUser";
 import { NavLink } from "@/components/layout/NavLink";
 import { AppearanceToolbar } from "@/components/theme/AppearanceToolbar";
@@ -31,13 +32,13 @@ export async function AppNav() {
       >
         <Link
           href={user ? "/" : "/"}
-          className="font-display text-lg tracking-wide text-[var(--foreground)] transition-opacity hover:opacity-70 md:text-xl"
+          className="font-display min-w-0 truncate text-base tracking-wide text-[var(--foreground)] transition-opacity hover:opacity-70 md:text-xl"
         >
           App cuisine
         </Link>
 
         {user ? (
-          <div className="flex items-center gap-x-3 md:gap-x-4">
+          <div className="flex shrink-0 items-center gap-1 md:gap-x-3">
             <nav className="hidden items-center gap-x-6 md:flex" aria-label="Navigation principale">
               {desktopNavLinks.map(({ href, label }) => (
                 <NavLink key={href} href={href} label={label} />
@@ -45,6 +46,7 @@ export async function AppNav() {
             </nav>
             <AppearanceToolbar />
             <AppNavUser email={user.email} />
+            <SignOutButton />
           </div>
         ) : (
           <div className="flex items-center gap-x-3 md:gap-x-5">

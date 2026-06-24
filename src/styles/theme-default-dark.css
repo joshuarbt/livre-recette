@@ -15,6 +15,9 @@
   --border: var(--border-subtle);
   --accent: #c4b8aa;
   --accent-muted: #8c8680;
+  --color-primary: var(--foreground);
+  --color-primary-highlight: color-mix(in srgb, var(--foreground) 12%, var(--surface));
+  --color-text-muted: var(--muted);
   --status-error: #d9a7a1;
   --status-error-bg: #2a1f1e;
   --status-success: #9bc4a2;

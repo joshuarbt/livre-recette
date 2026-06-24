@@ -1,5 +1,3 @@
-import { SignOutButton } from "@/components/auth/SignOutButton";
-
 type AppNavUserProps = {
   email: string | undefined;
 };
@@ -9,9 +7,9 @@ export function AppNavUser({ email }: AppNavUserProps) {
   const label = email ? `Compte de ${email}` : "Compte utilisateur";
 
   return (
-    <div className="flex items-center gap-x-3">
+    <div className="flex items-center gap-x-2 md:gap-x-3">
       <span
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--border-subtle)] text-xs font-medium text-[var(--foreground)]"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--border-subtle)] text-xs font-medium text-[var(--foreground)] md:h-8 md:w-8"
         aria-label={label}
       >
         {initial}
@@ -21,7 +19,6 @@ export function AppNavUser({ email }: AppNavUserProps) {
           {email}
         </span>
       ) : null}
-      <SignOutButton />
     </div>
   );
 }

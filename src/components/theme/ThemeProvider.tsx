@@ -20,6 +20,7 @@ type ThemeContextValue = {
   theme: AppTheme;
   colorScheme: ColorScheme;
   setTheme: (theme: AppTheme) => void;
+  toggleTheme: () => void;
   toggleColorScheme: () => void;
   isAero: boolean;
   canToggleColorScheme: boolean;
@@ -68,6 +69,10 @@ export function ThemeProvider({
     void setAppTheme(nextTheme);
   }, [colorScheme]);
 
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === "aero" ? "default" : "aero");
+  }, [setTheme, theme]);
+
   const toggleColorScheme = useCallback(() => {
     if (theme === "aero") {
       return;
@@ -84,11 +89,12 @@ export function ThemeProvider({
       theme,
       colorScheme,
       setTheme,
+      toggleTheme,
       toggleColorScheme,
       isAero: theme === "aero",
       canToggleColorScheme: theme !== "aero",
     }),
-    [colorScheme, setTheme, theme, toggleColorScheme],
+    [colorScheme, setTheme, theme, toggleColorScheme, toggleTheme],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

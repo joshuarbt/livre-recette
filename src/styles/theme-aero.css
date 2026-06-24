@@ -25,6 +25,9 @@
   --border: rgba(255, 255, 255, 0.6);
   --accent: #0077b6;
   --accent-muted: #00a8cc;
+  --color-primary: #0077b6;
+  --color-primary-highlight: rgba(0, 168, 204, 0.18);
+  --color-text-muted: #4a7a8a;
   --status-error: #8b3d3d;
   --status-error-bg: rgba(255, 230, 230, 0.55);
   --status-success: #2d6b3a;
@@ -81,11 +84,52 @@
 }
 
 [data-theme="aero"] nav.fixed.bottom-0 {
-  background: rgba(200, 230, 255, 0.55);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-top-color: rgba(255, 255, 255, 0.7);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: rgba(210, 235, 250, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 -2px 16px rgba(0, 140, 200, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="aero"] .mobile-tab-bar__icon {
+  color: #4a90b8;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.8));
+  transition:
+    color 200ms ease,
+    filter 200ms ease,
+    transform 200ms ease;
+}
+
+[data-theme="aero"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
+  color: #0077b6;
+  filter:
+    drop-shadow(0 0 6px rgba(0, 168, 204, 0.6))
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9));
+}
+
+[data-theme="aero"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(180, 225, 245, 0.6) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-full);
+  box-shadow:
+    0 2px 8px rgba(0, 140, 200, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="aero"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
+  color: #0077b6;
+  font-weight: 600;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="aero"] .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
+  background: #0077b6;
 }
 
 [data-theme="aero"] .surface-panel,
@@ -184,7 +228,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
-[data-theme="aero"] svg {
+[data-theme="aero"] svg:not(.mobile-tab-bar__icon) {
   color: #0077b6;
   filter: drop-shadow(0 1px 2px rgba(0, 150, 200, 0.4));
 }
@@ -250,16 +294,6 @@
   background: rgba(0, 168, 204, 0.35);
   animation-duration: 8s;
   animation-delay: -1s;
-}
-
-[data-theme="aero"] .theme-menu {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow:
-    0 8px 32px rgba(0, 150, 200, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 /* Recipe form spacing */

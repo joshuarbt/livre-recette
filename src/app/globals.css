@@ -13,6 +13,10 @@
   --border-strong: var(--border-subtle);
   --accent: #6e655c;
   --accent-muted: #a39a90;
+  --color-primary: var(--foreground);
+  --color-primary-highlight: color-mix(in srgb, var(--foreground) 8%, var(--surface));
+  --color-text-muted: var(--muted);
+  --radius-full: 9999px;
   --status-error: #7a4540;
   --status-error-bg: #f7f0ef;
   --status-success: #3d5c44;
@@ -436,5 +440,81 @@ body {
     .pb-mobile-action-focus-expanded {
       padding-bottom: 0;
     }
+  }
+
+  .mobile-tab-bar__link {
+    position: relative;
+    display: flex;
+    min-height: var(--touch-min);
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 0.25rem 0.25rem;
+    transition:
+      color 200ms ease,
+      background-color 200ms ease;
+  }
+
+  .mobile-tab-bar__indicator {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 3px;
+    width: 2rem;
+    transform: translateX(-50%) scaleX(0);
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    opacity: 0;
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+
+  .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__indicator {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  .mobile-tab-bar__icon-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    padding: 0;
+    transition:
+      background-color 200ms ease,
+      padding 200ms ease;
+  }
+
+  .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon-pill {
+    background: var(--color-primary-highlight);
+    padding: 6px 16px;
+  }
+
+  .mobile-tab-bar__icon {
+    color: var(--color-text-muted);
+    transition:
+      color 200ms ease,
+      transform 200ms ease;
+  }
+
+  .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__icon {
+    color: var(--color-primary);
+    transform: scale(1.1);
+  }
+
+  .mobile-tab-bar__label {
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color 200ms ease, font-weight 200ms ease;
+  }
+
+  .mobile-tab-bar__link[aria-current="page"] .mobile-tab-bar__label {
+    font-weight: 600;
+    color: var(--color-primary);
   }
 }
