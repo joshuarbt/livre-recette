@@ -36,7 +36,7 @@ export function MobileTabBar() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--border-hairline)] bg-[var(--background)]"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--border-hairline)]"
       aria-label="Navigation principale"
     >
       <div

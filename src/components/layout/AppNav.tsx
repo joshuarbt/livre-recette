@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AppNavUser } from "@/components/layout/AppNavUser";
 import { NavLink } from "@/components/layout/NavLink";
+import { AppearanceToolbar } from "@/components/theme/AppearanceToolbar";
 import { hasPublicEnv } from "@/lib/env/public";
 import { createClient } from "@/lib/supabase/server";
 
@@ -23,7 +24,7 @@ export async function AppNav() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border-hairline)] bg-[var(--background)]">
+    <header className="sticky top-0 z-40 border-b border-[var(--border-hairline)]">
       <div
         className="mx-auto flex max-w-5xl items-center justify-between px-[var(--space-page-x)]"
         style={{ minHeight: "var(--header-height)" }}
@@ -36,22 +37,26 @@ export async function AppNav() {
         </Link>
 
         {user ? (
-          <div className="flex items-center gap-x-4 md:gap-x-6">
+          <div className="flex items-center gap-x-3 md:gap-x-4">
             <nav className="hidden items-center gap-x-6 md:flex" aria-label="Navigation principale">
               {desktopNavLinks.map(({ href, label }) => (
                 <NavLink key={href} href={href} label={label} />
               ))}
             </nav>
+            <AppearanceToolbar />
             <AppNavUser email={user.email} />
           </div>
         ) : (
-          <div className="hidden items-center gap-x-5 md:flex">
-            <Link href="/login" className="text-caption transition-opacity hover:opacity-70">
-              Se connecter
-            </Link>
-            <Link href="/signup" className="btn-primary btn-sm text-xs">
-              Créer un compte
-            </Link>
+          <div className="flex items-center gap-x-3 md:gap-x-5">
+            <AppearanceToolbar />
+            <div className="hidden items-center gap-x-5 md:flex">
+              <Link href="/login" className="text-caption transition-opacity hover:opacity-70">
+                Se connecter
+              </Link>
+              <Link href="/signup" className="btn-primary btn-sm text-xs">
+                Créer un compte
+              </Link>
+            </div>
           </div>
         )}
       </div>
