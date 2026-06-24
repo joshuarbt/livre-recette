@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { RecipeFormClient } from "@/components/recipes/RecipeFormClient";
 import { PageShell } from "@/components/layout/PageShell";
@@ -21,7 +22,9 @@ export default async function NouvelleRecettePage() {
       <Link href="/" className="btn-ghost mb-6 inline-flex items-center">
         Retour aux recettes
       </Link>
-      <RecipeFormClient mode="create" userId={user.id} />
+      <Suspense fallback={<p className="text-caption text-[var(--muted)]">Chargement du formulaire…</p>}>
+        <RecipeFormClient mode="create" userId={user.id} />
+      </Suspense>
     </PageShell>
   );
 }

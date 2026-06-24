@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IngredientAutocomplete } from "@/components/IngredientAutocomplete";
 import { Icon } from "@/components/ui/Icon";
 import { validateCreateRecipeForm } from "@/lib/recipes/form-validation";
@@ -92,6 +92,12 @@ export function CreateRecipeForm({
     () => initialValues ?? createDefaultCreateRecipeFormValues(),
   );
   const [errors, setErrors] = useState<CreateRecipeFormErrors>({});
+
+  useEffect(() => {
+    if (initialValues) {
+      setValues(initialValues);
+    }
+  }, [initialValues]);
 
   const fieldErrors = { ...errors, ...serverErrors };
   const resolvedSubmitLabel =

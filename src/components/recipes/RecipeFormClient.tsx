@@ -1,9 +1,14 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { CreateRecipeForm } from "@/components/recipes/CreateRecipeForm";
 import { createRecipeFull, updateRecipeFull } from "@/lib/recipes/actions";
 import { uploadRecipeImage } from "@/lib/storage/recipe-images";
+import {
+  RECIPE_URL_IMPORT_STORAGE_KEY,
+  type RecipeUrlImportSession,
+} from "@/lib/import-recipe-url/types";
 import type {
   CreateRecipeFormErrors,
   CreateRecipeFormValues,
@@ -17,15 +22,39 @@ type RecipeFormClientProps =
   | { mode: "edit"; userId: string; recipeId: string; initialRecipe: RecipeDetail };
 
 export function RecipeFormClient(props: RecipeFormClientProps) {
+  const searchParams = useSearchParams();
   const [serverErrors, setServerErrors] = useState<CreateRecipeFormErrors>({});
   const [isPending, startTransition] = useTransition();
+  const [importedValues, setImportedValues] = useState<CreateRecipeFormValues | undefined>();
+  const [importPartial, setImportPartial] = useState(false);
+
+  useEffect(() => {
+    if (props.mode !== "create" || searchParams.get("fromUrl") !== "1") {
+      return;
+    }
+
+    const raw = sessionStorage.getItem(RECIPE_URL_IMPORT_STORAGE_KEY);
+    if (!raw) {
+      return;
+    }
+
+    sessionStorage.removeItem(RECIPE_URL_IMPORT_STORAGE_KEY);
+
+    try {
+      const session = JSON.parse(raw) as RecipeUrlImportSession;
+      setImportedValues(session.values);
+      setImportPartial(session.partial);
+    } catch {
+      // ignore invalid session payload
+    }
+  }, [props.mode, searchParams]);
 
   const initialValues = useMemo(
     () =>
       props.mode === "edit"
         ? recipeDetailToCreateRecipeFormValues(props.initialRecipe)
-        : undefined,
-    [props],
+        : importedValues,
+    [props, importedValues],
   );
 
   const cancelHref =
@@ -67,13 +96,21 @@ export function RecipeFormClient(props: RecipeFormClientProps) {
   }
 
   return (
-    <CreateRecipeForm
-      mode={props.mode}
-      initialValues={initialValues}
-      cancelHref={cancelHref}
-      onSubmit={handleSubmit}
-      isSubmitting={isPending}
-      serverErrors={serverErrors}
-    />
+    <div className="space-y-4">
+      {importPartial ? (
+        <p className="alert-warning text-sm" role="status">
+          Certaines informations n&apos;ont pas pu être extraites, vérifiez le formulaire avant de
+          sauvegarder
+        </p>
+      ) : null}
+      <CreateRecipeForm
+        mode={props.mode}
+        initialValues={initialValues}
+        cancelHref={cancelHref}
+        onSubmit={handleSubmit}
+        isSubmitting={isPending}
+        serverErrors={serverErrors}
+      />
+    </div>
   );
 }
