@@ -4,11 +4,13 @@ import { AppNav } from "@/components/layout/AppNav";
 import { MainContent } from "@/components/layout/MainContent";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { AeroBackground } from "@/components/theme/AeroBackground";
+import { MatrixRain } from "@/components/theme/MatrixRain";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getThemePreferences } from "@/lib/theme/server";
 import "./globals.css";
 import "@/styles/theme-aero.css";
 import "@/styles/theme-default-dark.css";
+import "@/styles/theme-matrix.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -45,6 +47,7 @@ export default async function RootLayout({
       <body className="flex min-h-full min-w-0 flex-col bg-[var(--background)] text-[var(--foreground)]">
         <ThemeProvider initialTheme={theme} initialColorScheme={colorScheme}>
           <AeroBackground />
+          <MatrixRain />
           <div className="app-shell flex min-h-full min-w-0 flex-1 flex-col">
             <AppNav />
             <MainContent>{children}</MainContent>

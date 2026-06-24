@@ -12,6 +12,7 @@ import { setAppTheme, setColorScheme } from "@/lib/theme/actions";
 import {
   DEFAULT_COLOR_SCHEME,
   DEFAULT_THEME,
+  getNextTheme,
   type AppTheme,
   type ColorScheme,
 } from "@/lib/theme/constants";
@@ -23,6 +24,7 @@ type ThemeContextValue = {
   toggleTheme: () => void;
   toggleColorScheme: () => void;
   isAero: boolean;
+  isMatrix: boolean;
   canToggleColorScheme: boolean;
 };
 
@@ -56,21 +58,24 @@ export function ThemeProvider({
     initialTheme === "aero" ? DEFAULT_COLOR_SCHEME : initialColorScheme,
   );
 
-  const setTheme = useCallback((nextTheme: AppTheme) => {
-    const nextColorScheme =
-      nextTheme === "aero" ? DEFAULT_COLOR_SCHEME : colorScheme;
+  const setTheme = useCallback(
+    (nextTheme: AppTheme) => {
+      const nextColorScheme =
+        nextTheme === "aero" ? DEFAULT_COLOR_SCHEME : colorScheme;
 
-    setThemeState(nextTheme);
-    if (nextTheme === "aero") {
-      setColorSchemeState(DEFAULT_COLOR_SCHEME);
-    }
+      setThemeState(nextTheme);
+      if (nextTheme === "aero") {
+        setColorSchemeState(DEFAULT_COLOR_SCHEME);
+      }
 
-    applyThemeToDocument(nextTheme, nextColorScheme);
-    void setAppTheme(nextTheme);
-  }, [colorScheme]);
+      applyThemeToDocument(nextTheme, nextColorScheme);
+      void setAppTheme(nextTheme);
+    },
+    [colorScheme],
+  );
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === "aero" ? "default" : "aero");
+    setTheme(getNextTheme(theme));
   }, [setTheme, theme]);
 
   const toggleColorScheme = useCallback(() => {
@@ -92,6 +97,7 @@ export function ThemeProvider({
       toggleTheme,
       toggleColorScheme,
       isAero: theme === "aero",
+      isMatrix: theme === "matrix",
       canToggleColorScheme: theme !== "aero",
     }),
     [colorScheme, setTheme, theme, toggleColorScheme, toggleTheme],
