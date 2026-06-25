@@ -14,6 +14,7 @@ type ShoppingListItemRow = {
   total_quantity: number;
   unit: string;
   is_checked: boolean;
+  is_manual: boolean;
   ingredients: { name: string } | { name: string }[] | null;
 };
 
@@ -34,6 +35,7 @@ function mapShoppingListItems(rows: ShoppingListItemRow[]): ShoppingListItem[] {
       totalQuantity: Number(row.total_quantity),
       unit: row.unit,
       isChecked: row.is_checked,
+      isManual: row.is_manual,
     }))
     .sort((left, right) => left.ingredientName.localeCompare(right.ingredientName, "fr"));
 }
@@ -61,7 +63,7 @@ export async function getShoppingListByWeek(
 
   const { data: itemRows, error: itemsError } = await supabase
     .from("shopping_list_items")
-    .select("id, ingredient_id, total_quantity, unit, is_checked, ingredients(name)")
+    .select("id, ingredient_id, total_quantity, unit, is_checked, is_manual, ingredients(name)")
     .eq("shopping_list_id", listRow.id)
     .order("ingredient_id", { ascending: true });
 

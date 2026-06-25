@@ -5,6 +5,7 @@ export type ShoppingListItem = {
   totalQuantity: number;
   unit: string;
   isChecked: boolean;
+  isManual: boolean;
 };
 
 export type ShoppingListData = {
@@ -21,6 +22,10 @@ export type ShoppingListActionResult =
 
 export type GenerateShoppingListResult =
   | { success: true; data: ShoppingListData }
+  | { success: false; error: string };
+
+export type MutateShoppingListResult =
+  | { success: true; data: ShoppingListData | null }
   | { success: false; error: string };
 
 export type PlannedMeal = {
@@ -50,6 +55,13 @@ export type AggregatedIngredient = {
   totalQuantity: number | null;
   unit: string;
   hasQuantity: boolean;
+};
+
+export type RecipeForShopping = {
+  id: string;
+  title: string;
+  imageUrl: string | null;
+  servings: number | null;
 };
 
 export type FetchShoppingListResult =

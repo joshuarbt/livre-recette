@@ -2,11 +2,18 @@
 
 import { revalidatePath } from "next/cache";
 import { generateShoppingList } from "@/lib/shopping-list/generate";
+import {
+  addManualItem,
+  addRecipeToList,
+  clearList,
+  removeShoppingListItem,
+} from "@/lib/shopping-list/mutations";
 import { getShoppingListByWeek } from "@/lib/shopping-list/queries";
 import { createClient } from "@/lib/supabase/server";
 import type {
   FetchShoppingListResult,
   GenerateShoppingListResult,
+  MutateShoppingListResult,
   ShoppingListActionResult,
 } from "@/types/shopping-list";
 import { getWeekStart, isValidPlanDate } from "@/utils/week";
@@ -98,4 +105,97 @@ export async function toggleShoppingListItem(
 
   revalidatePath("/courses");
   return { success: true };
+}
+
+export async function addManualItemAction(
+  weekStart: string,
+  name: string,
+  quantity?: number,
+  unit?: string,
+): Promise<MutateShoppingListResult> {
+  const userResult = await requireUserId();
+  if (typeof userResult !== "string") {
+    return { success: false, error: "Vous devez être connecté." };
+  }
+
+  const parsedWeekStart = parseWeekStart(weekStart);
+  if (!parsedWeekStart) {
+    return { success: false, error: "Semaine invalide." };
+  }
+
+  try {
+    const data = await addManualItem(userResult, parsedWeekStart, name, quantity, unit);
+    revalidatePath("/courses");
+    return { success: true, data };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur inconnue.";
+    return { success: false, error: message };
+  }
+}
+
+export async function addRecipeToListAction(
+  weekStart: string,
+  recipeId: string,
+  servings: number,
+): Promise<MutateShoppingListResult> {
+  const userResult = await requireUserId();
+  if (typeof userResult !== "string") {
+    return { success: false, error: "Vous devez être connecté." };
+  }
+
+  const parsedWeekStart = parseWeekStart(weekStart);
+  if (!parsedWeekStart) {
+    return { success: false, error: "Semaine invalide." };
+  }
+
+  try {
+    const data = await addRecipeToList(userResult, parsedWeekStart, recipeId, servings);
+    revalidatePath("/courses");
+    return { success: true, data };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur inconnue.";
+    return { success: false, error: message };
+  }
+}
+
+export async function clearListAction(
+  weekStart: string,
+  onlyChecked: boolean,
+): Promise<MutateShoppingListResult> {
+  const userResult = await requireUserId();
+  if (typeof userResult !== "string") {
+    return { success: false, error: "Vous devez être connecté." };
+  }
+
+  const parsedWeekStart = parseWeekStart(weekStart);
+  if (!parsedWeekStart) {
+    return { success: false, error: "Semaine invalide." };
+  }
+
+  try {
+    const data = await clearList(userResult, parsedWeekStart, onlyChecked);
+    revalidatePath("/courses");
+    return { success: true, data };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur inconnue.";
+    return { success: false, error: message };
+  }
+}
+
+export async function removeShoppingListItemAction(
+  itemId: string,
+): Promise<MutateShoppingListResult> {
+  const userResult = await requireUserId();
+  if (typeof userResult !== "string") {
+    return { success: false, error: "Vous devez être connecté." };
+  }
+
+  try {
+    const data = await removeShoppingListItem(userResult, itemId);
+    revalidatePath("/courses");
+    return { success: true, data };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erreur inconnue.";
+    return { success: false, error: message };
+  }
 }

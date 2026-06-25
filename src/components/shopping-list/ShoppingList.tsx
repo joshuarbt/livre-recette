@@ -2,61 +2,118 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
+import { AddRecipeToListModal } from "@/components/shopping-list/AddRecipeToListModal";
 import { ShoppingListItemRow } from "@/components/shopping-list/ShoppingListItem";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { ShoppingListManualAddForm } from "@/components/shopping-list/ShoppingListManualAddForm";
 import { Icon } from "@/components/ui/Icon";
-import { useShoppingList } from "@/hooks/useShoppingList";
 import { actionIcons } from "@/lib/icons";
-import type { ShoppingListData } from "@/types/shopping-list";
+import type { RecipeForShopping, ShoppingListItem } from "@/types/shopping-list";
 import { addWeeks, formatWeekRange } from "@/utils/week";
 
 type ShoppingListProps = {
-  userId: string;
-  initialWeekStart: string;
-  initialList: ShoppingListData | null;
+  weekStart: string;
+  recipes: RecipeForShopping[];
+  planningItems: ShoppingListItem[];
+  manualItems: ShoppingListItem[];
+  progress: { checkedCount: number; totalCount: number };
+  isPending: boolean;
+  error: string | null;
+  onGenerate: () => void;
+  onToggle: (
+    itemId: string,
+    nextChecked: boolean,
+  ) => Promise<{ success: boolean; error?: string }>;
+  onRemove: (itemId: string) => void;
+  onAddManual: (name: string, quantity?: number, unit?: string) => Promise<{ success: boolean }>;
+  onAddRecipes: (
+    selections: { recipeId: string; servings: number }[],
+  ) => Promise<{ success: boolean }>;
 };
 
 function buildCoursesHref(weekStart: string): string {
   return `/courses?week=${weekStart}`;
 }
 
+function ItemSection({
+  title,
+  items,
+  isPending,
+  isToggling,
+  onToggle,
+  onRemove,
+}: {
+  title: string;
+  items: ShoppingListItem[];
+  isPending: boolean;
+  isToggling: boolean;
+  onToggle: (
+    itemId: string,
+    nextChecked: boolean,
+  ) => Promise<{ success: boolean; error?: string }>;
+  onRemove: (itemId: string) => void;
+}) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="space-y-2">
+      <h3 className="text-overline">{title}</h3>
+      <div className="space-y-2">
+        {items.map((item) => (
+          <ShoppingListItemRow
+            key={item.id}
+            name={item.ingredientName}
+            quantity={item.totalQuantity}
+            unit={item.unit}
+            isManual={item.isManual}
+            showQuantity={item.totalQuantity > 0}
+            isChecked={item.isChecked}
+            disabled={isPending || isToggling}
+            onToggle={() => onToggle(item.id, !item.isChecked)}
+            onRemove={() => onRemove(item.id)}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function ShoppingList({
-  userId,
-  initialWeekStart,
-  initialList,
+  weekStart,
+  recipes,
+  planningItems,
+  manualItems,
+  progress,
+  isPending,
+  error,
+  onGenerate,
+  onToggle,
+  onRemove,
+  onAddManual,
+  onAddRecipes,
 }: ShoppingListProps) {
   const [toggleError, setToggleError] = useState<string | null>(null);
+  const [recipeModalOpen, setRecipeModalOpen] = useState(false);
   const [isToggling, startToggleTransition] = useTransition();
 
-  const {
-    weekStart,
-    items,
-    progress,
-    isPending,
-    error,
-    generateList,
-    toggleItem,
-  } = useShoppingList({
-    userId,
-    initialWeekStart,
-    initialList,
-  });
-
-  function handleGenerate() {
-    void generateList();
-  }
+  const hasItems = planningItems.length > 0 || manualItems.length > 0;
 
   function handleToggle(itemId: string, nextChecked: boolean) {
     setToggleError(null);
     startToggleTransition(async () => {
-      const result = await toggleItem(itemId, nextChecked);
+      const result = await onToggle(itemId, nextChecked);
       if (!result.success) {
-        setToggleError(result.error);
+        setToggleError(result.error ?? "Erreur lors de la mise à jour.");
       }
     });
   }
 
-  const hasItems = items.length > 0;
+  async function handleAddRecipes(
+    selections: { recipeId: string; servings: number }[],
+  ): Promise<{ success: boolean }> {
+    return onAddRecipes(selections);
+  }
 
   return (
     <div className="space-y-6">
@@ -86,43 +143,65 @@ export function ShoppingList({
           </Link>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={onGenerate}
+          disabled={isPending}
+          className="btn-primary disabled:opacity-60"
+        >
+          {isPending ? "Génération…" : hasItems ? "Regénérer la liste" : "Générer la liste"}
+        </button>
+      </div>
+
+      <div className="space-y-3 rounded-sm border border-[var(--border-subtle)] p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
+          <ShoppingListManualAddForm disabled={isPending} onAdd={onAddManual} />
           <button
             type="button"
-            onClick={handleGenerate}
             disabled={isPending}
-            className="btn-primary disabled:opacity-60"
+            onClick={() => setRecipeModalOpen(true)}
+            className="btn-ghost shrink-0 whitespace-nowrap text-sm"
           >
-            {isPending
-              ? "Génération…"
-              : hasItems
-                ? "Regénérer la liste"
-                : "Générer la liste"}
+            <Icon icon={actionIcons.add} size="sm" className="mr-1 inline" />
+            Ajouter une recette
           </button>
         </div>
       </div>
 
+      <div className="border-t border-[var(--border-subtle)]" />
+
       {!hasItems ? (
-        <EmptyState
-          message="Aucune liste de courses pour cette semaine."
-          description="Planifiez des repas puis générez la liste à partir du planning."
-        />
+        <p className="text-caption text-center text-[var(--muted)]">
+          Aucun article pour le moment. Ajoutez-en manuellement ou générez la liste depuis le planning.
+        </p>
       ) : (
-        <div className="space-y-2">
-          {items.map((item) => (
-            <ShoppingListItemRow
-              key={item.id}
-              name={item.ingredientName}
-              quantity={item.totalQuantity}
-              unit={item.unit}
-              showQuantity={item.totalQuantity > 0}
-              isChecked={item.isChecked}
-              disabled={isPending || isToggling}
-              onToggle={() => handleToggle(item.id, !item.isChecked)}
-            />
-          ))}
+        <div className="space-y-6">
+          <ItemSection
+            title="Depuis le planning"
+            items={planningItems}
+            isPending={isPending}
+            isToggling={isToggling}
+            onToggle={handleToggle}
+            onRemove={onRemove}
+          />
+          <ItemSection
+            title="Ajouts manuels"
+            items={manualItems}
+            isPending={isPending}
+            isToggling={isToggling}
+            onToggle={handleToggle}
+            onRemove={onRemove}
+          />
         </div>
       )}
+
+      <AddRecipeToListModal
+        open={recipeModalOpen}
+        recipes={recipes}
+        disabled={isPending}
+        onClose={() => setRecipeModalOpen(false)}
+        onAdd={handleAddRecipes}
+      />
 
       {error ? (
         <p role="alert" className="text-status-error text-sm">

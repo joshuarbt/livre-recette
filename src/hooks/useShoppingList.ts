@@ -2,11 +2,16 @@
 
 import { useCallback, useMemo, useState, useTransition } from "react";
 import {
+  addManualItemAction,
+  addRecipeToListAction,
+  clearListAction,
   generateShoppingListAction,
+  removeShoppingListItemAction,
   toggleShoppingListItem,
 } from "@/lib/shopping-list/actions";
 import type {
   GenerateShoppingListResult,
+  MutateShoppingListResult,
   ShoppingListActionResult,
   ShoppingListData,
   ShoppingListItem,
@@ -24,12 +29,34 @@ type UseShoppingListReturn = {
   weekStart: string;
   list: ShoppingListData | null;
   items: ShoppingListItem[];
+  planningItems: ShoppingListItem[];
+  manualItems: ShoppingListItem[];
   progress: { checkedCount: number; totalCount: number };
   isPending: boolean;
   error: string | null;
   generateList: () => Promise<GenerateShoppingListResult>;
   toggleItem: (itemId: string, isChecked: boolean) => Promise<ShoppingListActionResult>;
+  addManualItem: (
+    name: string,
+    quantity?: number,
+    unit?: string,
+  ) => Promise<MutateShoppingListResult>;
+  addRecipeToList: (recipeId: string, servings: number) => Promise<MutateShoppingListResult>;
+  clearList: (onlyChecked: boolean) => Promise<MutateShoppingListResult>;
+  removeItem: (itemId: string) => Promise<MutateShoppingListResult>;
 };
+
+function wrapTransition<T>(
+  startTransition: (callback: () => void) => void,
+  action: () => Promise<T>,
+): Promise<T> {
+  return new Promise((resolve) => {
+    startTransition(async () => {
+      const result = await action();
+      resolve(result);
+    });
+  });
+}
 
 export function useShoppingList({
   userId,
@@ -42,6 +69,16 @@ export function useShoppingList({
   const [isPending, startTransition] = useTransition();
 
   const items = list?.items ?? [];
+
+  const planningItems = useMemo(
+    () => items.filter((item) => !item.isManual),
+    [items],
+  );
+
+  const manualItems = useMemo(
+    () => items.filter((item) => item.isManual),
+    [items],
+  );
 
   const progress = useMemo(() => computeShoppingProgress(items), [items]);
 
@@ -89,24 +126,124 @@ export function useShoppingList({
     [list],
   );
 
-  const generateListWithTransition = useCallback(async (): Promise<GenerateShoppingListResult> => {
-    return new Promise((resolve) => {
-      startTransition(async () => {
-        const result = await generateList();
-        resolve(result);
+  const addManualItem = useCallback(
+    async (
+      name: string,
+      quantity?: number,
+      unit?: string,
+    ): Promise<MutateShoppingListResult> => {
+      setError(null);
+      const result = await addManualItemAction(weekStart, name, quantity, unit);
+
+      if (!result.success) {
+        setError(result.error);
+        return result;
+      }
+
+      setList(result.data);
+      return result;
+    },
+    [weekStart],
+  );
+
+  const addRecipeToList = useCallback(
+    async (recipeId: string, servings: number): Promise<MutateShoppingListResult> => {
+      setError(null);
+      const result = await addRecipeToListAction(weekStart, recipeId, servings);
+
+      if (!result.success) {
+        setError(result.error);
+        return result;
+      }
+
+      setList(result.data);
+      return result;
+    },
+    [weekStart],
+  );
+
+  const clearList = useCallback(
+    async (onlyChecked: boolean): Promise<MutateShoppingListResult> => {
+      const previousList = list;
+      setError(null);
+
+      if (onlyChecked) {
+        setList((current) => {
+          if (!current) {
+            return current;
+          }
+
+          return {
+            ...current,
+            items: current.items.filter((item) => !item.isChecked),
+          };
+        });
+      } else {
+        setList((current) => (current ? { ...current, items: [] } : current));
+      }
+
+      const result = await clearListAction(weekStart, onlyChecked);
+
+      if (!result.success) {
+        setError(result.error);
+        setList(previousList);
+        return result;
+      }
+
+      setList(result.data);
+      return result;
+    },
+    [list, weekStart],
+  );
+
+  const removeItem = useCallback(
+    async (itemId: string): Promise<MutateShoppingListResult> => {
+      const previousList = list;
+      setError(null);
+
+      setList((current) => {
+        if (!current) {
+          return current;
+        }
+
+        return {
+          ...current,
+          items: current.items.filter((item) => item.id !== itemId),
+        };
       });
-    });
-  }, [generateList]);
+
+      const result = await removeShoppingListItemAction(itemId);
+
+      if (!result.success) {
+        setError(result.error);
+        setList(previousList);
+        return result;
+      }
+
+      setList(result.data);
+      return result;
+    },
+    [list],
+  );
 
   return {
     userId,
     weekStart,
     list,
     items,
+    planningItems,
+    manualItems,
     progress,
     isPending,
     error,
-    generateList: generateListWithTransition,
+    generateList: () => wrapTransition(startTransition, generateList),
     toggleItem,
+    addManualItem: (name, quantity, unit) =>
+      wrapTransition(startTransition, () => addManualItem(name, quantity, unit)),
+    addRecipeToList: (recipeId, servings) =>
+      wrapTransition(startTransition, () => addRecipeToList(recipeId, servings)),
+    clearList: (onlyChecked) =>
+      wrapTransition(startTransition, () => clearList(onlyChecked)),
+    removeItem: (itemId) => wrapTransition(startTransition, () => removeItem(itemId)),
   };
 }

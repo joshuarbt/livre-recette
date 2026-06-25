@@ -1,3 +1,4 @@
+import type { RecipeForShopping } from "@/types/shopping-list";
 import type { RecipeSummary } from "@/types/meal-plan";
 import type {
   RecipeDetail,
@@ -171,4 +172,26 @@ export async function getRecipeSummaries(): Promise<RecipeSummary[]> {
     title: row.title,
     imageUrl: row.image_url,
   }));
+}
+
+export async function getRecipesForShoppingList(): Promise<RecipeForShopping[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("recipes")
+    .select("id, title, image_url, servings")
+    .order("title", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as { id: string; title: string; image_url: string | null; servings: number | null }[]).map(
+    (row) => ({
+      id: row.id,
+      title: row.title,
+      imageUrl: row.image_url,
+      servings: row.servings,
+    }),
+  );
 }

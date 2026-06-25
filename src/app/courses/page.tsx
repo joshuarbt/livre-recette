@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { PageShell } from "@/components/layout/PageShell";
-import { ShoppingList } from "@/components/shopping-list/ShoppingList";
+import { ShoppingListPage } from "@/components/shopping-list/ShoppingListPage";
 import { getShoppingListByWeek } from "@/lib/shopping-list/queries";
+import { getRecipesForShoppingList } from "@/lib/recipes/queries";
 import { createClient } from "@/lib/supabase/server";
 import { getWeekStart, isValidPlanDate } from "@/utils/week";
 
@@ -31,20 +31,18 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
 
   const params = await searchParams;
   const weekStart = parseWeekStart(params.week);
-  const shoppingList = await getShoppingListByWeek(user.id, weekStart);
+  const [shoppingList, recipes] = await Promise.all([
+    getShoppingListByWeek(user.id, weekStart),
+    getRecipesForShoppingList(),
+  ]);
 
   return (
-    <PageShell
-      title="Liste de courses"
-      subtitle="Générée automatiquement depuis votre planning hebdomadaire."
-      wide
-    >
-      <ShoppingList
-        key={`${weekStart}-${shoppingList?.id ?? "empty"}`}
-        userId={user.id}
-        initialWeekStart={weekStart}
-        initialList={shoppingList}
-      />
-    </PageShell>
+    <ShoppingListPage
+      key={`${weekStart}-${shoppingList?.id ?? "empty"}`}
+      userId={user.id}
+      initialWeekStart={weekStart}
+      initialList={shoppingList}
+      recipes={recipes}
+    />
   );
 }

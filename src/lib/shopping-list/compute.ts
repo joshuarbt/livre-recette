@@ -39,7 +39,7 @@ function resolveUnit(ingredientUnit: string | null): string {
   return trimmed && trimmed.length > 0 ? trimmed : "unité";
 }
 
-function normalizeUnit(unit: string): string {
+export function normalizeUnit(unit: string): string {
   return unit.trim().toLocaleLowerCase("fr");
 }
 
@@ -146,4 +146,36 @@ export function computeShoppingListItems(
   return Array.from(aggregated.values()).sort((left, right) =>
     left.ingredientName.localeCompare(right.ingredientName, "fr"),
   );
+}
+
+export function aggregateRecipeIngredients(
+  rows: RecipeIngredientRow[],
+  servings: number,
+): AggregatedIngredient[] {
+  const aggregated = new Map<string, AggregatedIngredient>();
+  const recipeServings = rows[0]?.recipeServings ?? 1;
+  const safeRecipeServings = recipeServings > 0 ? recipeServings : 1;
+  const scale = servings / safeRecipeServings;
+
+  for (const row of rows) {
+    const scaledQuantity = scaleRowQuantity(row.quantity, scale);
+    const unit = resolveUnit(row.ingredientUnit);
+    const key = aggregationKey(row.ingredientId, unit);
+    const existing = aggregated.get(key);
+
+    if (existing) {
+      mergeQuantities(existing, scaledQuantity);
+      continue;
+    }
+
+    aggregated.set(key, {
+      ingredientId: row.ingredientId,
+      ingredientName: row.ingredientName,
+      totalQuantity: scaledQuantity,
+      unit,
+      hasQuantity: scaledQuantity !== null,
+    });
+  }
+
+  return Array.from(aggregated.values());
 }

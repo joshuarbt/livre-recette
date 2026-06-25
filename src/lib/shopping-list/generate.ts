@@ -1,4 +1,4 @@
-import { computeShoppingListItems } from "@/lib/shopping-list/compute";
+import { computeShoppingListItems, normalizeUnit } from "@/lib/shopping-list/compute";
 import { getShoppingListByWeek } from "@/lib/shopping-list/queries";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -156,22 +156,26 @@ export async function generateShoppingList(
 
   const { data: existingItems, error: existingItemsError } = await supabase
     .from("shopping_list_items")
-    .select("id, ingredient_id, is_checked")
+    .select("id, ingredient_id, total_quantity, unit, is_checked, is_manual")
     .eq("shopping_list_id", shoppingListId);
 
   if (existingItemsError) {
     throw new Error(existingItemsError.message);
   }
 
-  const checkedByIngredient = new Map<string, boolean>();
-  for (const item of existingItems ?? []) {
-    checkedByIngredient.set(item.ingredient_id, item.is_checked);
-  }
+  const existingRows = (existingItems ?? []) as {
+    id: string;
+    ingredient_id: string;
+    total_quantity: number;
+    unit: string;
+    is_checked: boolean;
+    is_manual: boolean;
+  }[];
 
   const nextIngredientIds = new Set(aggregatedItems.map((item) => item.ingredientId));
 
-  const staleItemIds = (existingItems ?? [])
-    .filter((item) => !nextIngredientIds.has(item.ingredient_id))
+  const staleItemIds = existingRows
+    .filter((item) => !item.is_manual && !nextIngredientIds.has(item.ingredient_id))
     .map((item) => item.id);
 
   if (staleItemIds.length > 0) {
@@ -185,20 +189,57 @@ export async function generateShoppingList(
     }
   }
 
-  if (aggregatedItems.length > 0) {
-    const { error: upsertError } = await supabase.from("shopping_list_items").upsert(
-      aggregatedItems.map((item) => ({
+  for (const item of aggregatedItems) {
+    const planningQuantity = item.hasQuantity ? (item.totalQuantity ?? 0) : 0;
+    const existing = existingRows.find((row) => row.ingredient_id === item.ingredientId);
+
+    if (!existing) {
+      const { error: insertError } = await supabase.from("shopping_list_items").insert({
         shopping_list_id: shoppingListId,
         ingredient_id: item.ingredientId,
-        total_quantity: item.hasQuantity ? (item.totalQuantity ?? 0) : 0,
+        total_quantity: planningQuantity,
         unit: item.unit,
-        is_checked: checkedByIngredient.get(item.ingredientId) ?? false,
-      })),
-      { onConflict: "shopping_list_id,ingredient_id" },
-    );
+        is_checked: false,
+        is_manual: false,
+      });
 
-    if (upsertError) {
-      throw new Error(upsertError.message);
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
+      continue;
+    }
+
+    if (existing.is_manual) {
+      if (normalizeUnit(existing.unit) !== normalizeUnit(item.unit)) {
+        continue;
+      }
+
+      const { error: updateError } = await supabase
+        .from("shopping_list_items")
+        .update({
+          total_quantity: Number(existing.total_quantity) + planningQuantity,
+          is_manual: true,
+        })
+        .eq("id", existing.id);
+
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+      continue;
+    }
+
+    const { error: updateError } = await supabase
+      .from("shopping_list_items")
+      .update({
+        total_quantity: planningQuantity,
+        unit: item.unit,
+        is_checked: existing.is_checked,
+        is_manual: false,
+      })
+      .eq("id", existing.id);
+
+    if (updateError) {
+      throw new Error(updateError.message);
     }
   }
 
