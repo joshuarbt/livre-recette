@@ -99,13 +99,19 @@ export function ShoppingList({
 
   const hasItems = planningItems.length > 0 || manualItems.length > 0;
 
-  function handleToggle(itemId: string, nextChecked: boolean) {
+  function handleToggle(
+    itemId: string,
+    nextChecked: boolean,
+  ): Promise<{ success: boolean; error?: string }> {
     setToggleError(null);
-    startToggleTransition(async () => {
-      const result = await onToggle(itemId, nextChecked);
-      if (!result.success) {
-        setToggleError(result.error ?? "Erreur lors de la mise à jour.");
-      }
+    return new Promise((resolve) => {
+      startToggleTransition(async () => {
+        const result = await onToggle(itemId, nextChecked);
+        if (!result.success) {
+          setToggleError(result.error ?? "Erreur lors de la mise à jour.");
+        }
+        resolve(result);
+      });
     });
   }
 
