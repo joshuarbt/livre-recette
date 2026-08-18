@@ -125,7 +125,7 @@ export function CreateRecipeForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl space-y-8">
+    <form noValidate onSubmit={handleSubmit} className="mx-auto max-w-2xl space-y-8">
       <RecipeFormSection title="Informations générales">
         <label className="block space-y-2">
           <span className="input-label">Titre</span>
@@ -182,15 +182,17 @@ export function CreateRecipeForm({
             />
           </label>
           <label className="block space-y-2">
-            <span className="input-label">Cuisson (min)</span>
+            <span className="input-label">Cuisson (min, optionnel)</span>
             <input
               type="number"
-              min={1}
+              min={0}
+              step={1}
               value={values.cookTime}
               disabled={isSubmitting}
               onChange={(event) => updateField("cookTime", event.target.value)}
               className="input-field"
             />
+            <FieldError message={fieldErrors.cookTime} />
           </label>
           <label className="block space-y-2">
             <span className="input-label">Nombre de parts</span>

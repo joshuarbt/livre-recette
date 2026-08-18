@@ -24,6 +24,18 @@ function parsePositiveNumber(value: string): number | null {
   return parsed;
 }
 
+function parseOptionalMinutes(value: string): { ok: true; minutes: number | null } | { ok: false } {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return { ok: true, minutes: null };
+  }
+  const parsed = Number(trimmed);
+  if (!Number.isInteger(parsed) || parsed < 0) {
+    return { ok: false };
+  }
+  return { ok: true, minutes: parsed === 0 ? null : parsed };
+}
+
 export function validateCreateRecipeForm(
   values: CreateRecipeFormValues,
 ): { valid: true; data: CreateRecipePayload } | { valid: false; errors: CreateRecipeFormErrors } {
@@ -45,10 +57,11 @@ export function validateCreateRecipeForm(
     errors.form = "Temps de préparation invalide.";
   }
 
-  const cookTime = values.cookTime.trim() ? parsePositiveInt(values.cookTime) : null;
-  if (values.cookTime.trim() && cookTime === null) {
-    errors.form = "Temps de cuisson invalide.";
+  const cookTimeResult = parseOptionalMinutes(values.cookTime);
+  if (!cookTimeResult.ok) {
+    errors.cookTime = "Temps de cuisson invalide.";
   }
+  const cookTime = cookTimeResult.ok ? cookTimeResult.minutes : null;
 
   if (values.imageMode === "url" && values.imageUrl.trim()) {
     try {
@@ -129,6 +142,7 @@ export function validateCreateRecipeForm(
   const hasErrors =
     errors.title ||
     errors.servings ||
+    errors.cookTime ||
     errors.ingredients ||
     errors.imageUrl ||
     errors.form ||

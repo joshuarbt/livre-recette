@@ -80,6 +80,7 @@ export type CreateRecipeFormValues = {
 export type CreateRecipeFormErrors = {
   title?: string;
   servings?: string;
+  cookTime?: string;
   ingredients?: string;
   ingredientRows?: Record<string, { name?: string; quantity?: string; unit?: string }>;
   utensilRows?: Record<string, { name?: string }>;
