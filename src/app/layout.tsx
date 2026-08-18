@@ -18,12 +18,24 @@ export const metadata: Metadata = {
   title: "App cuisine",
   description: "Livre de recettes et planning des repas",
   applicationName: "App cuisine",
+  appleWebApp: {
+    capable: true,
+    title: "App cuisine",
+    statusBarStyle: "default",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f6f3" },
+    { media: "(prefers-color-scheme: dark)", color: "#141311" },
+  ],
 };
 
 export default async function RootLayout({
