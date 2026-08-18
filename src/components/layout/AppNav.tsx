@@ -4,6 +4,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AppNavUser } from "@/components/layout/AppNavUser";
 import { NavLink } from "@/components/layout/NavLink";
 import { AppearanceToolbar } from "@/components/theme/AppearanceToolbar";
+import { isAdmin } from "@/lib/admin/is-admin";
 import { hasPublicEnv } from "@/lib/env/public";
 import { createClient } from "@/lib/supabase/server";
 
@@ -24,6 +25,8 @@ export async function AppNav() {
     } = await supabase.auth.getUser();
     user = authUser;
   }
+
+  const showAdminLink = Boolean(user && isAdmin(user));
 
   return (
     <header className="app-header sticky top-0 z-40 md:border-b md:border-[var(--border-hairline)] md:bg-[var(--background)]">
@@ -47,7 +50,13 @@ export async function AppNav() {
               {desktopNavLinks.map(({ href, label }) => (
                 <NavLink key={href} href={href} label={label} />
               ))}
+              {showAdminLink ? <NavLink href="/admin" label="Admin" /> : null}
             </nav>
+            {showAdminLink ? (
+              <Link href="/admin" className="text-caption md:hidden">
+                Admin
+              </Link>
+            ) : null}
             <AppearanceToolbar />
             <AppNavUser email={user.email} />
             <SignOutButton />

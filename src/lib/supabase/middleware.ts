@@ -1,8 +1,9 @@
+import { isAdmin } from "@/lib/admin/is-admin";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getPublicEnv } from "@/lib/env/public";
 
-const protectedPrefixes = ["/recipes", "/recettes", "/planning", "/courses", "/congelateur"] as const;
+const protectedPrefixes = ["/recipes", "/recettes", "/planning", "/courses", "/congelateur", "/admin"] as const;
 const authRoutes = ["/login", "/signup"];
 
 function isProtectedRoute(pathname: string): boolean {
@@ -64,6 +65,12 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && isAuthRoute) {
+    const homeUrl = request.nextUrl.clone();
+    homeUrl.pathname = "/";
+    return NextResponse.redirect(homeUrl);
+  }
+
+  if (user && (pathname === "/admin" || pathname.startsWith("/admin/")) && !isAdmin(user)) {
     const homeUrl = request.nextUrl.clone();
     homeUrl.pathname = "/";
     return NextResponse.redirect(homeUrl);
