@@ -35,17 +35,8 @@ export function MobileTabBar() {
   }
 
   return (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--border-hairline)]"
-      aria-label="Navigation principale"
-    >
-      <div
-        className="mx-auto flex max-w-lg items-stretch justify-around px-1"
-        style={{
-          minHeight: "var(--tab-bar-height)",
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        }}
-      >
+    <nav className="mobile-tab-bar" aria-label="Navigation principale">
+      <div className="mobile-tab-bar__inner">
         {tabs.map(({ href, label, icon }) => {
           const active = isTabActive(pathname, href);
 
@@ -56,7 +47,6 @@ export function MobileTabBar() {
               className="mobile-tab-bar__link"
               aria-current={active ? "page" : undefined}
             >
-              <span className="mobile-tab-bar__indicator" aria-hidden />
               <span className="mobile-tab-bar__icon-pill">
                 <Icon
                   icon={icon}

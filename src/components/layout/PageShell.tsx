@@ -30,7 +30,7 @@ export function PageShell({
           <div className="flex min-w-0 flex-wrap items-center gap-2">{actions}</div>
         ) : null}
       </div>
-      {children ? <div className="mt-10 min-w-0 md:mt-12">{children}</div> : null}
+      {children ? <div className="mt-8 min-w-0 md:mt-12">{children}</div> : null}
     </FadeIn>
   );
 }

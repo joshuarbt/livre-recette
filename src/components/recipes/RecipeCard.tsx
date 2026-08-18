@@ -13,7 +13,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
   return (
     <article>
       <Link href={`/recipes/${recipe.id}`} className="block active:opacity-80">
-        <div className="overflow-hidden bg-[var(--surface-muted)]">
+        <div className="overflow-hidden rounded-[var(--radius-lg)] bg-[var(--surface-muted)] shadow-[var(--shadow-sm)]">
           {recipe.imageUrl ? (
             <Image
               src={recipe.imageUrl}

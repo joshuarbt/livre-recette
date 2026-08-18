@@ -29,8 +29,8 @@ export function ShoppingListItemRow({
 
   return (
     <div
-      className={`flex min-h-[var(--touch-min)] w-full items-center gap-3 rounded-sm border border-[var(--border-hairline)] px-3 py-2 transition-opacity ${
-        isChecked ? "bg-[var(--surface-muted)] opacity-70" : "bg-[var(--surface)]"
+      className={`flex min-h-[var(--touch-min)] w-full items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--surface)] px-3 py-2 shadow-[var(--shadow-sm)] transition-opacity ${
+        isChecked ? "bg-[var(--surface-muted)] opacity-70" : ""
       } ${disabled ? "opacity-60" : ""}`}
     >
       <button
@@ -42,9 +42,9 @@ export function ShoppingListItemRow({
       >
         <span
           aria-hidden="true"
-          className={`flex h-6 w-6 items-center justify-center rounded-sm border transition-colors duration-200 ${
+          className={`flex h-6 w-6 items-center justify-center rounded-full border transition-colors duration-200 ${
             isChecked
-              ? "border-[var(--foreground)] bg-[var(--foreground)] text-white"
+              ? "border-[var(--accent)] bg-[var(--accent)] text-white"
               : "border-[var(--border-subtle)] bg-[var(--background)]"
           }`}
         >

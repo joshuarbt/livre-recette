@@ -25,13 +25,13 @@ export async function AppNav() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border-hairline)]">
+    <header className="app-header sticky top-0 z-40 md:border-b md:border-[var(--border-hairline)] md:bg-[var(--background)]">
       <div
         className="mx-auto flex max-w-5xl items-center justify-between px-[var(--space-page-x)]"
         style={{ minHeight: "var(--header-height)" }}
       >
         <Link
-          href={user ? "/" : "/"}
+          href="/"
           className="font-display min-w-0 truncate text-base tracking-wide text-[var(--foreground)] transition-opacity hover:opacity-70 md:text-xl"
         >
           App cuisine
