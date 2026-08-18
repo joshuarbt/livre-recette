@@ -6,6 +6,7 @@ type PageShellProps = {
   children?: React.ReactNode;
   wide?: boolean;
   actions?: React.ReactNode;
+  lead?: React.ReactNode;
 };
 
 export function PageShell({
@@ -14,6 +15,7 @@ export function PageShell({
   children,
   wide = false,
   actions,
+  lead,
 }: PageShellProps) {
   return (
     <FadeIn
@@ -21,8 +23,13 @@ export function PageShell({
         wide ? "max-w-5xl" : "max-w-2xl"
       }`}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="min-w-0 flex-1">
+      {lead ? <div className="mb-6 flex justify-center">{lead}</div> : null}
+      <div
+        className={`flex flex-col gap-4 md:flex-row md:items-start md:justify-between ${
+          lead ? "text-center md:text-center" : ""
+        }`}
+      >
+        <div className={`min-w-0 flex-1 ${lead ? "flex flex-col items-center" : ""}`}>
           <h1 className="break-words text-display">{title}</h1>
           {subtitle ? <p className="text-caption mt-3 break-words">{subtitle}</p> : null}
         </div>

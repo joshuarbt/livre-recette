@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AppNavUser } from "@/components/layout/AppNavUser";
 import { NavLink } from "@/components/layout/NavLink";
 import { AppearanceToolbar } from "@/components/theme/AppearanceToolbar";
@@ -32,9 +33,12 @@ export async function AppNav() {
       >
         <Link
           href="/"
-          className="font-display min-w-0 truncate text-base tracking-wide text-[var(--foreground)] transition-opacity hover:opacity-70 md:text-xl"
+          className="flex min-w-0 items-center gap-2 text-[var(--foreground)] transition-opacity hover:opacity-70"
         >
-          App cuisine
+          <BrandLogo size="sm" decorative />
+          <span className="font-display truncate text-base tracking-wide md:text-xl">
+            App cuisine
+          </span>
         </Link>
 
         {user ? (

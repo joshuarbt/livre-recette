@@ -17,6 +17,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "App cuisine",
   description: "Livre de recettes et planning des repas",
+  applicationName: "App cuisine",
 };
 
 export const viewport: Viewport = {
