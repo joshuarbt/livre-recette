@@ -38,6 +38,22 @@ export async function updateUserEmail(
   return { success: true };
 }
 
+export async function confirmUserEmail(userId: string): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    email_confirm: true,
+  });
+
+  if (error) {
+    return { success: false, error: translateAuthError(error.message) };
+  }
+
+  revalidateAdmin();
+  return { success: true };
+}
+
 export async function updateUserPassword(
   userId: string,
   password: string,

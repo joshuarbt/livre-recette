@@ -3,6 +3,7 @@ export type AdminUserListItem = {
   email: string;
   createdAt: string;
   lastSignInAt: string | null;
+  emailConfirmed: boolean;
   isAdmin: boolean;
 };
 

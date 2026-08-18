@@ -9,6 +9,7 @@ function mapAdminUser(user: User): AdminUserListItem {
     email: user.email ?? "",
     createdAt: user.created_at,
     lastSignInAt: user.last_sign_in_at ?? null,
+    emailConfirmed: Boolean(user.email_confirmed_at),
     isAdmin: isAdmin(user),
   };
 }

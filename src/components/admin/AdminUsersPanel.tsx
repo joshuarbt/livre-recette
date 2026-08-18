@@ -4,7 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AdminUserEditSheet } from "@/components/admin/AdminUserEditSheet";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { deleteUserAccount } from "@/lib/admin/actions";
+import { confirmUserEmail, deleteUserAccount } from "@/lib/admin/actions";
 import type { AdminUserListItem } from "@/types/admin";
 
 type AdminUsersPanelProps = {
@@ -48,6 +48,22 @@ export function AdminUsersPanel({ users, currentUserId }: AdminUsersPanelProps) 
         user.id.toLocaleLowerCase("fr").includes(term),
     );
   }, [users, search]);
+
+  function handleConfirmEmail(user: AdminUserListItem) {
+    if (user.emailConfirmed) {
+      return;
+    }
+
+    setError(null);
+    startTransition(async () => {
+      const result = await confirmUserEmail(user.id);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      router.refresh();
+    });
+  }
 
   function handleDelete(user: AdminUserListItem) {
     if (user.id === currentUserId) {
@@ -95,6 +111,15 @@ export function AdminUsersPanel({ users, currentUserId }: AdminUsersPanelProps) 
                 <div className="min-w-0">
                   <p className="text-heading break-all">{user.email || "Sans e-mail"}</p>
                   <p className="text-caption mt-1 break-all">{user.id}</p>
+                  <p
+                    className={`text-caption mt-1 ${
+                      user.emailConfirmed
+                        ? "text-[var(--status-success)]"
+                        : "text-[var(--status-warning)]"
+                    }`}
+                  >
+                    {user.emailConfirmed ? "E-mail vérifié" : "E-mail non vérifié"}
+                  </p>
                   <p className="text-caption mt-1">
                     Créé le {formatDate(user.createdAt)}
                     {" · "}
@@ -124,6 +149,14 @@ export function AdminUsersPanel({ users, currentUserId }: AdminUsersPanelProps) 
                     className="btn-ghost text-sm"
                   >
                     Mot de passe
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isPending || user.emailConfirmed}
+                    onClick={() => handleConfirmEmail(user)}
+                    className="btn-ghost text-sm disabled:opacity-40"
+                  >
+                    {user.emailConfirmed ? "E-mail déjà vérifié" : "Valider l'e-mail"}
                   </button>
                   <button
                     type="button"
