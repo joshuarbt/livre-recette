@@ -284,6 +284,16 @@ body {
       box-shadow 0.2s var(--ease-out);
   }
 
+  /* iOS Safari zoome si font-size < 16px au focus */
+  @media (max-width: 767px) {
+    .input-field,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]),
+    select,
+    textarea {
+      font-size: 1rem;
+    }
+  }
+
   .input-field:focus {
     border-color: var(--accent);
     outline: none;
