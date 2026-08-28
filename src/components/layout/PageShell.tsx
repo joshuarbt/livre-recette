@@ -2,7 +2,7 @@ import { FadeIn } from "@/components/layout/motion";
 
 type PageShellProps = {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   children?: React.ReactNode;
   wide?: boolean;
   actions?: React.ReactNode;

@@ -9,6 +9,7 @@ import {
   Link2,
   Pencil,
   Plus,
+  Search,
   ShoppingCart,
   Snowflake,
   Trash2,
@@ -28,6 +29,7 @@ export const navIcons = {
 export const actionIcons = {
   add: Plus,
   close: X,
+  search: Search,
   download: Download,
   expand: ChevronDown,
   link: Link2,

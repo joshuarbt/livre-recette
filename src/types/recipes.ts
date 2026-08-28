@@ -9,6 +9,11 @@ export const RECIPE_CATEGORIES = [
 
 export type RecipeCategory = (typeof RECIPE_CATEGORIES)[number]["value"];
 
+export type RecipeBrowseFilters = {
+  search: string;
+  category: RecipeCategory | null;
+};
+
 export type RecipeListItem = {
   id: string;
   title: string;
