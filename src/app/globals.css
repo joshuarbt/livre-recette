@@ -575,7 +575,9 @@ body {
   }
 
   .btn-sm {
+    min-height: 2.25rem;
     padding: var(--btn-padding-y-sm) var(--btn-padding-x-sm);
+    font-size: var(--text-caption);
   }
 
   .pb-tab-bar {

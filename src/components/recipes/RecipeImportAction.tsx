@@ -111,7 +111,7 @@ export function RecipeImportAction({ userId, existingTitles }: RecipeImportActio
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="btn-ghost inline-flex items-center gap-2"
+        className="btn-ghost btn-sm inline-flex items-center gap-2"
       >
         <Icon icon={actionIcons.upload} size="sm" />
         Importer une recette
