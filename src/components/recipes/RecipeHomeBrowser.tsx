@@ -80,7 +80,7 @@ export function RecipeHomeBrowser({ recipes, onFilterStateChange }: RecipeHomeBr
   return (
     <div className="space-y-6">
       <div
-        className="sticky top-[var(--header-height)] z-40 -mx-[var(--space-page-x)] space-y-3 bg-[color-mix(in_srgb,var(--background)_88%,transparent)] px-[var(--space-page-x)] py-3 backdrop-blur-md md:static md:mx-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none"
+        className="sticky top-[var(--header-height)] z-40 -mx-[var(--space-page-x)] space-y-3 bg-[color-mix(in_srgb,var(--background)_88%,transparent)] px-[var(--space-page-x)] pt-1 pb-3 backdrop-blur-md md:static md:mx-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none"
       >
         <SearchField
           value={search}
