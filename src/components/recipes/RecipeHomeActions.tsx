@@ -9,7 +9,7 @@ type RecipeHomeActionsProps = {
 
 export function RecipeHomeActions({ userId, existingTitles }: RecipeHomeActionsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="recipe-home-actions">
       <RecipeUrlImportAction />
       <RecipeImportAction userId={userId} existingTitles={existingTitles} />
       <RecipeAddAction />

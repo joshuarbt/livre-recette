@@ -68,14 +68,16 @@ export function RecipeUrlImportAction() {
   }
 
   return (
-    <div className="flex flex-col items-start gap-1">
+    <div className="flex min-w-0 flex-col items-stretch gap-1">
       <button
         type="button"
         onClick={() => setOpen(true)}
+        aria-label="Importer depuis un site"
         className="btn-ghost btn-sm inline-flex items-center gap-2"
       >
         <Icon icon={actionIcons.link} size="sm" />
-        Importer depuis un site
+        <span className="truncate md:hidden">Site</span>
+        <span className="hidden truncate md:inline">Importer depuis un site</span>
       </button>
 
       <BottomSheet

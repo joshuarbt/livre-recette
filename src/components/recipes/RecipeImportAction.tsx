@@ -100,7 +100,7 @@ export function RecipeImportAction({ userId, existingTitles }: RecipeImportActio
   }
 
   return (
-    <div className="flex flex-col items-start gap-1">
+    <div className="flex min-w-0 flex-col items-stretch gap-1">
       <input
         ref={inputRef}
         type="file"
@@ -111,10 +111,12 @@ export function RecipeImportAction({ userId, existingTitles }: RecipeImportActio
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
+        aria-label="Importer une recette"
         className="btn-ghost btn-sm inline-flex items-center gap-2"
       >
         <Icon icon={actionIcons.upload} size="sm" />
-        Importer une recette
+        <span className="truncate md:hidden">Fichier</span>
+        <span className="hidden truncate md:inline">Importer une recette</span>
       </button>
       {error ? (
         <p role="alert" className="text-status-error w-full text-sm">
