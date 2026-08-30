@@ -39,7 +39,7 @@ export function PageShell({
           </div>
         ) : null}
       </div>
-      {children ? <div className="mt-8 min-w-0 md:mt-12">{children}</div> : null}
+      {children ? <div className="mt-4 min-w-0 md:mt-12">{children}</div> : null}
     </FadeIn>
   );
 }
