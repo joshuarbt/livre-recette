@@ -34,7 +34,9 @@ export function PageShell({
           {subtitle ? <p className="text-caption mt-3 break-words">{subtitle}</p> : null}
         </div>
         {actions ? (
-          <div className="flex min-w-0 flex-wrap items-center gap-2">{actions}</div>
+          <div className="flex min-w-0 w-full flex-wrap items-center gap-2 md:w-auto">
+            {actions}
+          </div>
         ) : null}
       </div>
       {children ? <div className="mt-8 min-w-0 md:mt-12">{children}</div> : null}
