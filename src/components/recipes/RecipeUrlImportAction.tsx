@@ -72,7 +72,7 @@ export function RecipeUrlImportAction() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-ghost inline-flex items-center gap-2"
+        className="btn-ghost btn-sm inline-flex items-center gap-2"
       >
         <Icon icon={actionIcons.link} size="sm" />
         Importer depuis un site

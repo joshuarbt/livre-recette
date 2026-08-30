@@ -6,7 +6,7 @@ import { actionIcons } from "@/lib/icons";
 
 export function RecipeAddAction() {
   return (
-    <Link href="/recettes/nouvelle" className="btn-primary inline-flex items-center gap-2">
+    <Link href="/recettes/nouvelle" className="btn-primary btn-sm inline-flex items-center gap-2">
       <Icon icon={actionIcons.add} size="sm" />
       Nouvelle recette
     </Link>
