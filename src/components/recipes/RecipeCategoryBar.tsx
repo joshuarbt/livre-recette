@@ -35,6 +35,19 @@ export function RecipeCategoryBar({
         Toutes
         <span className="text-[var(--muted)]">{totalCount}</span>
       </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={isSeasonalActive}
+        aria-label="De saison — légumes du mois en cours"
+        onClick={() => onCategoryChange(virtualCategory.value)}
+        className={`filter-chip ${isSeasonalActive ? "filter-chip--active" : ""}`}
+      >
+        {virtualCategory.label}
+        <span className={isSeasonalActive ? "text-[var(--accent-muted)]" : "text-[var(--muted)]"}>
+          {seasonalCount}
+        </span>
+      </button>
       {RECIPE_CATEGORIES.map((category) => {
         const count = categoryCounts[category.value] ?? 0;
         const isActive = selectedCategory === category.value;
