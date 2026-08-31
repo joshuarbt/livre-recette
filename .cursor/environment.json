@@ -5,8 +5,13 @@
   "terminals": [
     {
       "name": "next-dev",
-      "command": "npm run dev"
+      "command": "npm run dev",
+      "description": "Next.js dev server (http://localhost:3000)"
     }
   ],
-  "ports": [3000, 54321, 54323]
+  "ports": [
+    { "name": "web", "port": 3000 },
+    { "name": "supabase-api", "port": 54321 },
+    { "name": "supabase-studio", "port": 54323 }
+  ]
 }
