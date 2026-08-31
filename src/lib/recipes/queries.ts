@@ -15,6 +15,13 @@ type RecipeListRow = {
   image_url: string | null;
   category: string | null;
   servings: number | null;
+  recipe_ingredients?:
+    | { ingredients: { name: string } | { name: string }[] | null }[]
+    | null;
+};
+
+type RecipeListIngredientRow = {
+  ingredients: { name: string } | { name: string }[] | null;
 };
 
 type RecipeDetailRow = RecipeListRow & {
@@ -47,6 +54,16 @@ function getRelation<T>(value: T | T[] | null): T | null {
   return value;
 }
 
+function mapIngredientNames(rows: RecipeListIngredientRow[] | null | undefined): string[] {
+  if (!rows) {
+    return [];
+  }
+
+  return rows
+    .map((row) => getRelation(row.ingredients)?.name?.trim() ?? "")
+    .filter((name) => name.length > 0);
+}
+
 function mapRecipeListRow(row: RecipeListRow): RecipeListItem {
   return {
     id: row.id,
@@ -54,6 +71,7 @@ function mapRecipeListRow(row: RecipeListRow): RecipeListItem {
     imageUrl: row.image_url,
     category: row.category,
     servings: row.servings,
+    ingredientNames: mapIngredientNames(row.recipe_ingredients),
   };
 }
 
@@ -87,7 +105,7 @@ export async function getRecipes(): Promise<RecipeListItem[]> {
 
   const { data, error } = await supabase
     .from("recipes")
-    .select("id, title, image_url, category, servings")
+    .select("id, title, image_url, category, servings, recipe_ingredients(ingredients(name))")
     .order("title", { ascending: true });
 
   if (error) {
@@ -142,14 +160,16 @@ export async function getRecipeById(id: string): Promise<RecipeDetail | null> {
   }
 
   const base = mapRecipeListRow(data as RecipeDetailRow);
+  const ingredients = ((ingredientResult.data ?? []) as RecipeIngredientRow[]).map(mapIngredientRow);
 
   return {
     ...base,
+    ingredientNames: ingredients.map((ingredient) => ingredient.name),
     description: (data as RecipeDetailRow).description,
     prepTime: (data as RecipeDetailRow).prep_time,
     cookTime: (data as RecipeDetailRow).cook_time,
     createdAt: (data as RecipeDetailRow).created_at,
-    ingredients: ((ingredientResult.data ?? []) as RecipeIngredientRow[]).map(mapIngredientRow),
+    ingredients,
     utensils: ((utensilResult.data ?? []) as RecipeUtensilRow[]).map(mapUtensilRow),
     steps: ((stepResult.data ?? []) as RecipeStepRow[]).map(mapStepRow),
   };

@@ -9,10 +9,11 @@ import type { RecipeListItem } from "@/types/recipes";
 
 type RecipeHomeContentProps = {
   recipes: RecipeListItem[];
+  seasonalRecipeIds: readonly string[];
   userId: string;
 };
 
-export function RecipeHomeContent({ recipes, userId }: RecipeHomeContentProps) {
+export function RecipeHomeContent({ recipes, seasonalRecipeIds, userId }: RecipeHomeContentProps) {
   const [filteredCount, setFilteredCount] = useState(recipes.length);
   const [hasActiveFilters, setHasActiveFilters] = useState(false);
 
@@ -42,7 +43,11 @@ export function RecipeHomeContent({ recipes, userId }: RecipeHomeContentProps) {
         />
       }
     >
-      <RecipeHomeBrowser recipes={recipes} onFilterStateChange={handleFilterStateChange} />
+      <RecipeHomeBrowser
+        recipes={recipes}
+        seasonalRecipeIds={seasonalRecipeIds}
+        onFilterStateChange={handleFilterStateChange}
+      />
     </PageShell>
   );
 }
