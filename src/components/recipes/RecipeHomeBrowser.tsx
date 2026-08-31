@@ -5,10 +5,11 @@ import { RecipeCategoryBar } from "@/components/recipes/RecipeCategoryBar";
 import { RecipeList } from "@/components/recipes/RecipeList";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SearchField } from "@/components/ui/SearchField";
-import type { RecipeBrowseFilters, RecipeCategory, RecipeListItem } from "@/types/recipes";
+import type { RecipeBrowseCategory, RecipeBrowseFilters, RecipeListItem } from "@/types/recipes";
 
 type RecipeHomeBrowserProps = {
   recipes: RecipeListItem[];
+  seasonalRecipeIds: readonly string[];
   onFilterStateChange?: (state: {
     filteredCount: number;
     hasActiveFilters: boolean;
@@ -19,11 +20,16 @@ type RecipeHomeBrowserProps = {
 function filterRecipes(
   recipes: RecipeListItem[],
   filters: RecipeBrowseFilters,
+  seasonalRecipeIds: ReadonlySet<string>,
 ): RecipeListItem[] {
   const term = filters.search.trim().toLocaleLowerCase("fr");
 
   return recipes.filter((recipe) => {
-    if (filters.category !== null && recipe.category !== filters.category) {
+    if (filters.category === "de-saison") {
+      if (!seasonalRecipeIds.has(recipe.id)) {
+        return false;
+      }
+    } else if (filters.category !== null && recipe.category !== filters.category) {
       return false;
     }
 
@@ -48,15 +54,28 @@ function countRecipesByCategory(recipes: RecipeListItem[]): Record<string, numbe
   return counts;
 }
 
-export function RecipeHomeBrowser({ recipes, onFilterStateChange }: RecipeHomeBrowserProps) {
+export function RecipeHomeBrowser({
+  recipes,
+  seasonalRecipeIds,
+  onFilterStateChange,
+}: RecipeHomeBrowserProps) {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState<RecipeCategory | null>(null);
+  const [category, setCategory] = useState<RecipeBrowseCategory | null>(null);
+
+  const seasonalRecipeIdSet = useMemo(
+    () => new Set(seasonalRecipeIds),
+    [seasonalRecipeIds],
+  );
 
   const filters: RecipeBrowseFilters = { search, category };
   const hasActiveFilters = search.trim().length > 0 || category !== null;
 
-  const filteredRecipes = useMemo(() => filterRecipes(recipes, filters), [recipes, search, category]);
+  const filteredRecipes = useMemo(
+    () => filterRecipes(recipes, filters, seasonalRecipeIdSet),
+    [recipes, search, category, seasonalRecipeIdSet],
+  );
   const categoryCounts = useMemo(() => countRecipesByCategory(recipes), [recipes]);
+  const seasonalCount = seasonalRecipeIdSet.size;
 
   useEffect(() => {
     onFilterStateChange?.({
@@ -92,6 +111,7 @@ export function RecipeHomeBrowser({ recipes, onFilterStateChange }: RecipeHomeBr
           selectedCategory={category}
           categoryCounts={categoryCounts}
           totalCount={recipes.length}
+          seasonalCount={seasonalCount}
           onCategoryChange={setCategory}
         />
       </div>

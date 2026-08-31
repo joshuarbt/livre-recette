@@ -9,9 +9,15 @@ export const RECIPE_CATEGORIES = [
 
 export type RecipeCategory = (typeof RECIPE_CATEGORIES)[number]["value"];
 
+export const VIRTUAL_RECIPE_CATEGORIES = [{ value: "de-saison", label: "De saison" }] as const;
+
+export type VirtualRecipeCategory = (typeof VIRTUAL_RECIPE_CATEGORIES)[number]["value"];
+
+export type RecipeBrowseCategory = RecipeCategory | VirtualRecipeCategory;
+
 export type RecipeBrowseFilters = {
   search: string;
-  category: RecipeCategory | null;
+  category: RecipeBrowseCategory | null;
 };
 
 export type RecipeListItem = {
@@ -20,6 +26,7 @@ export type RecipeListItem = {
   imageUrl: string | null;
   category: string | null;
   servings: number | null;
+  ingredientNames: string[];
 };
 
 export type RecipeIngredientDetail = {

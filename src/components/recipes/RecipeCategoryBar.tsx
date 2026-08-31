@@ -1,19 +1,24 @@
-import type { RecipeCategory } from "@/types/recipes";
-import { RECIPE_CATEGORIES } from "@/types/recipes";
+import type { RecipeBrowseCategory } from "@/types/recipes";
+import { RECIPE_CATEGORIES, VIRTUAL_RECIPE_CATEGORIES } from "@/types/recipes";
 
 type RecipeCategoryBarProps = {
-  selectedCategory: RecipeCategory | null;
+  selectedCategory: RecipeBrowseCategory | null;
   categoryCounts: Record<string, number>;
   totalCount: number;
-  onCategoryChange: (category: RecipeCategory | null) => void;
+  seasonalCount: number;
+  onCategoryChange: (category: RecipeBrowseCategory | null) => void;
 };
 
 export function RecipeCategoryBar({
   selectedCategory,
   categoryCounts,
   totalCount,
+  seasonalCount,
   onCategoryChange,
 }: RecipeCategoryBarProps) {
+  const virtualCategory = VIRTUAL_RECIPE_CATEGORIES[0];
+  const isSeasonalActive = selectedCategory === virtualCategory.value;
+
   return (
     <div
       className="filter-chip-row -mx-[var(--space-page-x)] px-[var(--space-page-x)]"
@@ -50,6 +55,19 @@ export function RecipeCategoryBar({
           </button>
         );
       })}
+      <button
+        type="button"
+        role="tab"
+        aria-selected={isSeasonalActive}
+        aria-label="De saison — légumes du mois en cours"
+        onClick={() => onCategoryChange(virtualCategory.value)}
+        className={`filter-chip ${isSeasonalActive ? "filter-chip--active" : ""}`}
+      >
+        {virtualCategory.label}
+        <span className={isSeasonalActive ? "text-[var(--accent-muted)]" : "text-[var(--muted)]"}>
+          {seasonalCount}
+        </span>
+      </button>
     </div>
   );
 }
