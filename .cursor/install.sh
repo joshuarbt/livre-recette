@@ -9,7 +9,11 @@ echo "==> Installing system packages (docker, fuse-overlayfs)"
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update -qq
 # docker.io provides the daemon + CLI; fuse-overlayfs lets Docker run nested (no privileged mknod).
-sudo apt-get install -y -qq docker.io fuse-overlayfs curl ca-certificates || true
+# --force-confold keeps existing conffiles so fuse3's /etc/fuse.conf prompt can't block the install.
+sudo apt-get install -y -qq \
+  -o Dpkg::Options::="--force-confold" \
+  -o Dpkg::Options::="--force-confdef" \
+  docker.io fuse-overlayfs curl ca-certificates
 
 echo "==> Installing Supabase CLI ${SUPABASE_CLI_VERSION}"
 if ! command -v supabase >/dev/null 2>&1; then
