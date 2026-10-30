@@ -11,12 +11,19 @@ export function SignUpForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (!acceptedTerms) {
+      setError("Veuillez accepter les CGU et la politique de confidentialité.");
+      return;
+    }
+
     setIsLoading(true);
 
     const supabase = createClient();
@@ -58,6 +65,36 @@ export function SignUpForm() {
           onChange={setPassword}
           disabled={isLoading}
         />
+
+        <label className="flex items-start gap-3 text-sm leading-relaxed text-[var(--muted)]">
+          <input
+            id="signup-accept-terms"
+            type="checkbox"
+            name="acceptTerms"
+            checked={acceptedTerms}
+            onChange={(event) => setAcceptedTerms(event.target.checked)}
+            disabled={isLoading}
+            required
+            className="mt-1"
+          />
+          <span>
+            J&apos;accepte les{" "}
+            <Link
+              href="/cgu"
+              className="text-[var(--foreground)] underline-offset-2 hover:underline"
+            >
+              conditions générales d&apos;utilisation
+            </Link>{" "}
+            et la{" "}
+            <Link
+              href="/confidentialite"
+              className="text-[var(--foreground)] underline-offset-2 hover:underline"
+            >
+              politique de confidentialité
+            </Link>
+            .
+          </span>
+        </label>
 
         {error ? (
           <p role="alert" className="alert-error">

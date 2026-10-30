@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { CookieConsentBanner } from "@/components/cookies/CookieConsentBanner";
+import { CookieConsentProvider } from "@/components/cookies/CookieConsentProvider";
 import { AppNav } from "@/components/layout/AppNav";
+import { LegalFooter } from "@/components/layout/LegalFooter";
 import { MainContent } from "@/components/layout/MainContent";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -53,11 +56,15 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full min-w-0 flex-col bg-[var(--background)] text-[var(--foreground)]">
         <ThemeProvider initialColorScheme={colorScheme}>
-          <div className="app-shell flex min-h-full min-w-0 flex-1 flex-col">
-            <AppNav />
-            <MainContent>{children}</MainContent>
-            <MobileTabBar />
-          </div>
+          <CookieConsentProvider>
+            <div className="app-shell flex min-h-full min-w-0 flex-1 flex-col">
+              <AppNav />
+              <MainContent>{children}</MainContent>
+              <LegalFooter />
+              <MobileTabBar />
+            </div>
+            <CookieConsentBanner />
+          </CookieConsentProvider>
         </ThemeProvider>
       </body>
     </html>
