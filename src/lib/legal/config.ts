@@ -1,6 +1,6 @@
 /**
  * Informations légales et RGPD.
- * Remplacez les valeurs par défaut via les variables d'environnement en production.
+ * Les variables d'environnement LEGAL_* écrasent ces valeurs par défaut en production.
  */
 function envOrPlaceholder(key: string, fallback: string): string {
   const value = process.env[key]?.trim();
@@ -12,50 +12,32 @@ export const legalConfig = {
   lastUpdated: "30 octobre 2026",
 
   /** Éditeur / responsable du traitement */
-  controllerName: envOrPlaceholder(
-    "LEGAL_CONTROLLER_NAME",
-    "[Nom de l'éditeur — À REMPLIR]",
-  ),
+  controllerName: envOrPlaceholder("LEGAL_CONTROLLER_NAME", "Joshua Raboteau"),
   legalForm: envOrPlaceholder(
     "LEGAL_FORM",
-    "[Forme juridique — À REMPLIR, ex. EI / SAS / SARL]",
+    "Personne physique (non professionnelle)",
   ),
-  shareCapital: envOrPlaceholder(
-    "LEGAL_SHARE_CAPITAL",
-    "[Capital social — À REMPLIR, ou « non applicable » pour une personne physique]",
-  ),
-  siret: envOrPlaceholder("LEGAL_SIRET", "[SIRET — À REMPLIR]"),
-  rcs: envOrPlaceholder(
-    "LEGAL_RCS",
-    "[RCS / ville d'immatriculation — À REMPLIR, ou « non applicable »]",
-  ),
+  shareCapital: envOrPlaceholder("LEGAL_SHARE_CAPITAL", "Non applicable"),
+  siret: envOrPlaceholder("LEGAL_SIRET", "Non applicable"),
+  rcs: envOrPlaceholder("LEGAL_RCS", "Non applicable"),
   address: envOrPlaceholder(
     "LEGAL_ADDRESS",
-    "[Adresse du siège / domicile — À REMPLIR]",
+    "Contact par e-mail uniquement (pas d'adresse postale publiée)",
   ),
-  contactEmail: envOrPlaceholder("LEGAL_CONTACT_EMAIL", "contact@example.com"),
-  contactPhone: envOrPlaceholder(
-    "LEGAL_CONTACT_PHONE",
-    "[Téléphone — À REMPLIR]",
-  ),
+  contactEmail: envOrPlaceholder("LEGAL_CONTACT_EMAIL", "joshua@raboteau.fr"),
+  contactPhone: envOrPlaceholder("LEGAL_CONTACT_PHONE", "+33 6 30 06 11 49"),
 
   publicationDirector: envOrPlaceholder(
     "LEGAL_PUBLICATION_DIRECTOR",
-    "[Nom du directeur de la publication — À REMPLIR]",
+    "Joshua Raboteau",
   ),
 
-  hostName: envOrPlaceholder(
-    "LEGAL_HOST_NAME",
-    "[Nom de l'hébergeur — À REMPLIR, ex. Vercel Inc.]",
-  ),
+  hostName: envOrPlaceholder("LEGAL_HOST_NAME", "Vercel Inc."),
   hostAddress: envOrPlaceholder(
     "LEGAL_HOST_ADDRESS",
-    "[Adresse de l'hébergeur — À REMPLIR]",
+    "440 N Barranca Ave #4133, Covina, CA 91723, United States",
   ),
-  hostPhone: envOrPlaceholder(
-    "LEGAL_HOST_PHONE",
-    "[Téléphone de l'hébergeur — À REMPLIR]",
-  ),
+  hostPhone: envOrPlaceholder("LEGAL_HOST_PHONE", "+1 (415) 398-5463"),
 
   supabaseRegion: envOrPlaceholder(
     "LEGAL_SUPABASE_REGION",

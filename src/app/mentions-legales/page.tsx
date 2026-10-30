@@ -23,11 +23,11 @@ export default function MentionsLegalesPage() {
           </p>
           <ul className="list-disc space-y-2 pl-5 text-[var(--muted)]">
             <li>
-              <strong className="text-[var(--foreground)]">Nom / raison sociale</strong> —{" "}
+              <strong className="text-[var(--foreground)]">Nom</strong> —{" "}
               {legalConfig.controllerName}
             </li>
             <li>
-              <strong className="text-[var(--foreground)]">Forme juridique</strong> —{" "}
+              <strong className="text-[var(--foreground)]">Statut</strong> —{" "}
               {legalConfig.legalForm}
             </li>
             <li>
@@ -41,7 +41,7 @@ export default function MentionsLegalesPage() {
               <strong className="text-[var(--foreground)]">RCS</strong> — {legalConfig.rcs}
             </li>
             <li>
-              <strong className="text-[var(--foreground)]">Siège / adresse</strong> —{" "}
+              <strong className="text-[var(--foreground)]">Adresse / contact</strong> —{" "}
               {legalConfig.address}
             </li>
             <li>
