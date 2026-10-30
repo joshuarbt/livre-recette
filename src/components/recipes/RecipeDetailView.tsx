@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { CookModeOverlay } from "@/components/recipes/cook-mode/CookModeOverlay";
 import { RecipeServingsSelector } from "@/components/recipes/RecipeServingsSelector";
 import { Icon } from "@/components/ui/Icon";
 import { downloadRecipeExport } from "@/lib/export-import";
-import { actionIcons } from "@/lib/icons";
+import { actionIcons, navIcons } from "@/lib/icons";
 import { clearRecipeImage, deleteRecipe } from "@/lib/recipes/actions";
 import type { RecipeDetail } from "@/types/recipes";
 import { getRecipeCategoryLabel } from "@/types/recipes";
@@ -38,6 +39,7 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
   const [isClearingImage, startClearImageTransition] = useTransition();
   const baseServings = getBaseServings(recipe.servings);
   const [selectedServings, setSelectedServings] = useState(baseServings);
+  const [cookModeOpen, setCookModeOpen] = useState(false);
   const ratio = computeServingsRatio(selectedServings, baseServings);
 
   function handleClearImage() {
@@ -158,7 +160,17 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
 
       {recipe.steps.length > 0 ? (
         <section className="space-y-3">
-          <h3 className="text-overline">Préparation</h3>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h3 className="text-overline">Préparation</h3>
+            <button
+              type="button"
+              onClick={() => setCookModeOpen(true)}
+              className="btn-primary inline-flex items-center gap-2 text-sm"
+            >
+              <Icon icon={navIcons.recipes} size="sm" />
+              Mode Cuisine
+            </button>
+          </div>
           <ol className="space-y-4">
             {recipe.steps.map((step) => (
               <li key={step.stepNumber} className="space-y-1">
@@ -202,6 +214,15 @@ export function RecipeDetailView({ recipe, showImportSuccess = false }: RecipeDe
         <p role="alert" className="alert-error">
           {error}
         </p>
+      ) : null}
+
+      {recipe.steps.length > 0 ? (
+        <CookModeOverlay
+          open={cookModeOpen}
+          onClose={() => setCookModeOpen(false)}
+          title={recipe.title}
+          steps={recipe.steps}
+        />
       ) : null}
     </div>
   );
